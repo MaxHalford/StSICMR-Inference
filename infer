@@ -9,12 +9,12 @@ from lib import psmcfit
 parser = argparse.ArgumentParser()
 
 # Version
-parser.add_argument('--version', action='version',
+parser.add_argument('-v', '--version', action='version',
                     version='%(prog)s 1.0')
-
 # PSMC file
-parser.add_argument('-f', action='store', dest='psmc', type=str,
-                    help='PSMC file to fit.')
+required = parser.add_argument_group('required arguments')
+required.add_argument('-f', action='store', dest='psmc', type=str,
+                    help='PSMC file to fit.', required=True)
 # Islands
 parser.add_argument('-i', action='store', dest='islands', type=int,
                     default=100,
@@ -40,10 +40,11 @@ parser.add_argument('-g', action='store', dest='generations', type=int,
 parser.add_argument('-m', action='store', dest='method', type=str,
                     default='integral',
                     help='Method for evaluating the fits.')
-# Plot
+# Plot and JSON
 parser.add_argument('-k', action='store', dest='keep', type=str,
                     default='False',
-                    help='Set to True to save the plot.')
+                    help="""Set to True to save the inference as a plot
+                            and a JSON file.""")
 parameters = parser.parse_args()
 
 data = psmcfit.get_psmc_history(parameters.psmc)
@@ -65,7 +66,9 @@ pop.enhance(parameters.generations)
 # Plot the best one
 if parameters.keep == 'True':
     plotting.plotModel(pop.best.model, times, lambdas, logScale=True,
-                       save='{0}-{1}.png'.format(parameters.psmc.split('/')[-1].split('.')[0],
+                       save='examples/{0}_{1}_switch.png'.format(parameters.psmc.split('/')[-1].split('.')[0],
+                                                 parameters.switches))
+    pop.best.save('examples/{0}_{1}_switch'.format(parameters.psmc.split('/')[-1].split('.')[0],
                                                  parameters.switches))
 else:
     plotting.plotModel(pop.best.model, times, lambdas, logScale=True)

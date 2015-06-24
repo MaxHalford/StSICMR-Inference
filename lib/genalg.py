@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed May  6 09:27:01 2015
-
-@author: willy, max
-"""
-
 import random as rand
 import numpy as np
 from copy import deepcopy
@@ -19,14 +12,12 @@ def integral(X, Y):
 
 class Individual:
 
-    ''' Model. '''
-
     def __init__(self, Model, maxTime, maxIslands, switches):
+        ''' Generate a model. '''
         # Maximal time allowed
         self.maxTime = maxTime
         # Number of islands
         self.n = np.random.random_integers(2, maxIslands)
-        #self.n = maxIslands
         # Times of flow rate changes
         self.T = [0] + sorted([rand.uniform(0, self.maxTime)
                               for _ in range(switches)])
@@ -38,6 +29,7 @@ class Individual:
         self.fitness = None
 
     def evaluate_least_squares(self, times, lambdas):
+        ''' Evaluate how close two vectors are. '''
         # Update the model
         self.model.update(self.n, self.T, self.M)
         # Compute the differences
@@ -47,6 +39,7 @@ class Individual:
         self.fitness = np.sum(np.square(differences))
 
     def evaluate_integral(self, times, referenceIntegral):
+        ''' Evaluate how close two functions are. '''
         # Update the model
         self.model.update(self.n, self.T, self.M)
         # Get the new lambdas
@@ -56,7 +49,14 @@ class Individual:
         # The fitness is the difference between both
         self.fitness = np.sum((modelIntegral - referenceIntegral) ** 2)
 
-    def mutate(self, rate=30):
+    def mutate(self, rate=1):
+        '''
+        Randomly mutate islands, times, migrations rates or both. The
+        mutation rates can be manually specified here. The general idea
+        is that a big mutation rate will make the algorithm converge
+        faster whereas a small mutation rate will make it converge
+        better and more precisely.
+        '''
         threshold = rand.random()
         if threshold < 0.33:
             self.mutate_T(rate)
@@ -66,29 +66,43 @@ class Individual:
             self.mutate_T_M(rate)
         else:
             self.mutate_n(1)
-            #self.mutate_T_M(rate)
 
     def mutate_T(self, variance):
+        ''' Mutate times. '''
+        # The first time is always 0
         if len(self.T) >= 2:
+            # Choose how many times to mutate
             sampleSize = rand.randint(1, len(self.T) - 1)
+            # Choose a sample of the chosen size
             sample = rand.sample(range(1, len(self.T)), sampleSize)
+            # For each time
             for i in sample:
+                # Mutate it
                 t = self.T[i]
                 self.T[i] = rand.normalvariate(t, variance)
+                # Do it again as long as it is not valid
                 while not 0 < self.T[i] < self.maxTime:
                     self.T[i] = rand.normalvariate(t, variance)
+                # Sort them in ascending order
                 self.T.sort()
 
     def mutate_M(self, variance):
+        ''' Mutate migration rates. '''
+        # The first time is always 0
         sampleSize = rand.randint(1, len(self.M))
+        # Choose how many migration rates to mutate
         sample = rand.sample(range(len(self.M)), sampleSize)
+        # For each migration rate
         for i in sample:
+            # Mutate it
             m = self.M[i]
             self.M[i] = rand.normalvariate(m, variance)
+            # Do it again as long as it is not valid
             while not 0 < self.M[i]:
                 self.M[i] = rand.normalvariate(m, variance)
 
     def mutate_T_M(self, variance):
+        ''' Mutate couples (time, rate). Same ideas as before. '''
         if len(self.T) >= 2:
             sampleSize = rand.randint(1, len(self.T)-1)
             sample = rand.sample(range(1, len(self.T)), sampleSize)
@@ -104,15 +118,18 @@ class Individual:
                     self.M[i] = rand.normalvariate(m, variance)
 
     def mutate_n(self, variance):
+        ''' Mutate number of islands. '''
         n = self.n
+        # Mutate n
         self.n = n + np.random.choice((-variance, variance))
+        # Verify that n is greater or equal to 2.
         while not self.n >= 2:
             self.n = n + np.random.choice((-variance, variance))
 
-    # Save the DNA of the individual (the parameters)
     def save(self, path):
+        ''' Save the DNA of the individual (the parameters). '''
         # Create a dictionary
-        DNA = {'n': self.n,
+        DNA = {'n': int(self.n),
                'T': list(self.T),
                'M': list(self.M),
                'method': {'name': 'Genetic Algorithm',
@@ -128,10 +145,9 @@ class Individual:
 
 class Population:
 
-    ''' List of models for a given number of islands. '''
-
     def __init__(self, Model, times, lambdas, maxIslands, switches,
                  size=1000, repetitions=1, method='least_squares'):
+        ''' List of models for a given number of islands. '''
         # Timeframe to study
         self.times = np.array(times)
         # PSMC distribution to fit
@@ -154,12 +170,12 @@ class Population:
         self.best = np.random.choice(self.individuals[0])
         self.best.fitness = np.inf
 
-    # Sort in ascending order (smallest to highest fitness)
     def sort(self, index):
+        ''' Sort in ascending order (smallest to highest fitness). '''
         self.individuals[index].sort(key=lambda indi: indi.fitness)
 
-    # Evaluate all the individuals
     def evaluate(self, index):
+        ''' Evaluate all the individuals. '''
         for indi in self.individuals[index]:
             if self.method == 'least_squares':
                 indi.evaluate_least_squares(self.times, self.lambdas)
@@ -167,12 +183,12 @@ class Population:
                 indi.evaluate_integral(self.times, self.integral)
         self.sort(index)
 
-    # Elitism
     def elite(self, size, index):
+        ''' Simply the best. '''
         return self.individuals[index][:size]
 
-    # Tournament selection
     def tournament(self, size, tournamentSize, index):
+        ''' Tournament selection, the parameters are not so crucial. '''
         newIndividuals = []
         for _ in range(size):
             # Choose random participants for the tournament
@@ -184,14 +200,10 @@ class Population:
             newIndividuals.append(participants[0])
         return newIndividuals
 
-    # Linear rank based roulette selection
-    def rankedRoulette(self, size):
-        return 'to do'
-
-    # Mutate the population
     def enhance(self, generations):
+        ''' Mutate the population. '''
         for i in range(len(self.individuals)):
-            for _ in range(generations):
+            for g in range(generations):
                 newIndividuals = []
                 for individual in self.tournament(20, 10, i):
                     # Create a copy of the individual
@@ -208,3 +220,4 @@ class Population:
                 # Check if there is a new best individual
                 if self.individuals[i][0].fitness < self.best.fitness:
                     self.best = deepcopy(self.individuals[i][0])
+                print ('Repetition {0} - Generation {1} done.'.format(i+1, g+1))
