@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+
+import argparse
+from lib import genalg
+from lib import model
+from lib import plotting
+from lib import psmcfit
+
+parser = argparse.ArgumentParser()
+
+# Version
+parser.add_argument('--version', action='version',
+                    version='%(prog)s 1.0')
+
+# PSMC file
+parser.add_argument('-f', action='store', dest='psmc', type=str,
+                    help='PSMC file to fit.')
+# Islands
+parser.add_argument('-i', action='store', dest='islands', type=int,
+                    default=100,
+                    help="""Number of maximal islands for the first
+                            generation (not critical).""")
+# Switches
+parser.add_argument('-s', action='store', dest='switches', type=int,
+                    default=0,
+                    help='Number of switches for the model.')
+# Size
+parser.add_argument('-p', action='store', dest='size', type=int,
+                    default=1000,
+                    help='Initial population size (not critical).')
+# Repetitions
+parser.add_argument('-r', action='store', dest='repetitions', type=int,
+                    default=1,
+                    help='Number of times to repeat the process.')
+# Generations
+parser.add_argument('-g', action='store', dest='generations', type=int,
+                    default=100,
+                    help='Number of iterations for each population.')
+# Method
+parser.add_argument('-m', action='store', dest='method', type=str,
+                    default='integral',
+                    help='Method for evaluating the fits.')
+# Plot
+parser.add_argument('-k', action='store', dest='keep', type=str,
+                    default='False',
+                    help='Set to True to save the plot.')
+parameters = parser.parse_args()
+
+data = psmcfit.get_psmc_history(parameters.psmc)
+# Extract the times and the lambdas and remove initial decreases
+times, lambdas = psmcfit.search_increase(data['times'], data['lambdas'])
+# Normalize the vectors
+l0 = 1 / lambdas[0]
+times *= l0
+lambdas *= l0
+# Build a genetic algorithm
+pop = genalg.Population(model.StSICMR, times, lambdas,
+                        maxIslands=parameters.islands,
+                        switches=parameters.switches,
+                        size=parameters.size,
+                        repetitions=parameters.repetitions,
+                        method=parameters.method)
+# Enhance them all
+pop.enhance(parameters.generations)
+# Plot the best one
+if parameters.keep == 'True':
+    plotting.plotModel(pop.best.model, times, lambdas, logScale=True,
+                       save='{0}-{1}.png'.format(parameters.psmc.split('/')[-1].split('.')[0],
+                                                 parameters.switches))
+else:
+    plotting.plotModel(pop.best.model, times, lambdas, logScale=True)
