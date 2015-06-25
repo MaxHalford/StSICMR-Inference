@@ -128,8 +128,8 @@ python3 infer -f examples/example2.psmc -i 100 -s 4 -p 1000 -r 1 -g 100 -u 2 -m 
 
 If you have questions about the mathematics please send a mail to **``willyrv@gmail.com``**.
 
-If you have questions about the genetic algorithm and/or the code please send a mail to **``maxhalford25@gmail.com``**.
+If you have questions about the genetic algorithm and/or the code please send a mail to "Max Halford" <admin@listforks.com>.
 
 ## License
 
-Open source licensed under the MIT license.
+See [LICENSE](LICENSE)
