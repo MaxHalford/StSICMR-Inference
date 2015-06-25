@@ -1,7 +1,5 @@
 ![StSICMR](logo.png)
 
-#! 
-
 ## Symmetrical Island Model with Changes in Migration Rates - Inference
 
 The Symmentrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by [Oliver Mazet](http://fr.viadeo.com/fr/profile/olivier.mazet1) and [Lounès Chikhi](https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi) with their research team.
@@ -23,10 +21,10 @@ The following module versions were used, that said older and newer versions have
 
 If you do not have them installed type
 
-	```sh
-	cd /StSICMR-Inference
-	pip3 install -r requirements.txt
-	```
+```sh
+cd /StSICMR-Inference
+pip3 install -r requirements.txt
+```
 	
 If you don't have ``pip`` installed then you can install the modules manually, this should be easy on any platform as all of them are extremely popular modules. 
 
