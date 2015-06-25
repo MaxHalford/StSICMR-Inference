@@ -30,39 +30,41 @@ If you don't have ``pip`` installed then you can install the modules manually, t
 
 In order to compile some Python code into C code you also have to type
 
-	```sh
-	cd /lib/cython/
-	./compile.sh
-	```
+```sh
+cd /lib/cython/
+./compile.sh
+```
+
 ### With a virtual environment
 
 If you want to be safe and not mess with your Python environment you can create a [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/) by doing the following steps.
 
 **1. Clone the repository**
-	```sh
-	git clone https://github.com/MaxHalford/StSICMR-Inference
-	cd StSICMR-Inference
-	```
+
+```sh
+git clone https://github.com/MaxHalford/StSICMR-Inference
+cd StSICMR-Inference
+```
 	
 **2. Create and activate a virtual environment**
 
-	```sh
-	virtualenv -p /usr/bin/python3 venv
-	source venv/bin/activate
-	```
+```sh
+virtualenv -p /usr/bin/python3 venv
+source venv/bin/activate
+```
 	
 **3. Install requirements**
 
-	```sh
-	pip3 install -r requirements.txt
-	```
+```sh
+pip3 install -r requirements.txt
+```
 
 **4. Compile Python code to C code**
 
-	```sh
-	cd lib/cython
-	./compile.sh
-	```
+```sh
+cd lib/cython
+./compile.sh
+```
 
 This creates a sandboxed Python where you can do as you please without fear of screwing up your setup. The only thing required is to have Python 3.x installed in order to run ``virtualenv env``. To deactivate the virtual environment type ``deactivate``. To activate it type ``source venv/bin/activate``, if you don't the default Python interpreter will be used. You can delete the ``StSICMR-Inference`` folder and it will be as if nothing ever happened.
 
@@ -76,13 +78,17 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 
 #### First example
 
-	python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+```sh
+python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+```
 
 ![Example 1](examples/example1_0_switch.png)`
 
 #### Second example
 
-	python3 infer -f examples/example2.psmc -i 100 -s 4 -p 1000 -r 1 -g 100 -u 2 -m integral -k True
+```sh
+python3 infer -f examples/example2.psmc -i 100 -s 4 -p 1000 -r 1 -g 100 -u 2 -m integral -k True
+```
 
 ![Example 2](examples/example2_3_switch.png)
 
