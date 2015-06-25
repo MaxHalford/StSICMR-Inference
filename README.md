@@ -1,4 +1,4 @@
-![StSICMR](logo.png)
+![StSICMR](http://i.imgur.com/MtvTjvh.png)
 
 ## Symmetrical Island Model with Changes in Migration Rates - Inference
 

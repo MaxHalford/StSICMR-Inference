@@ -11,11 +11,11 @@ def plotModel(model, times, lambdas=None, logScale=False,
     # Evaluate the model at the given time steps
     lambda_s = [model.lambda_s(t) for t in times]
     # Plot the model in red
-    plt.step(times, lambda_s, label='Obtained', linewidth=3,
+    plt.step(times, lambda_s, label='PSMC Lambda', linewidth=3,
              where='post', color='red', alpha=0.5)
     # Plot the lambda function in green
     if lambdas is not None:
-        plt.step(times, lambdas, label='Model', linewidth=3,
+        plt.step(times, lambdas, label='Model Lambda', linewidth=3,
                  where='post', color='green', alpha=0.5)
         # Compute the squared error
         squared_error = np.sum(((lambdas[i] - lambda_s[i]) ** 2
