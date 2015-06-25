@@ -82,7 +82,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
 ```
 
-![Example 1](examples/example1_0_switch.png)`
+![Example 1](examples/example1_0_switch.png)
 
 #### Second example
 
