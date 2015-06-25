@@ -55,13 +55,13 @@ This creates a sandboxed Python where you can do as you please without fear of s
 
 ### First example
 
-	python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -m least_squares -k True
+	python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
 
 ![Example 1](examples/example1_0_switch.png)`
 
 ### Second example
 
-	python3 infer -f examples/example2.psmc -i 100 -s 4 -p 1000 -r 1 -g 100 -m integral -k True
+	python3 infer -f examples/example2.psmc -i 100 -s 4 -p 1000 -r 1 -g 100 -u 2 -m integral -k True
 
 ![Example 2](examples/example2_3_switch.png)
 
@@ -102,3 +102,7 @@ This creates a sandboxed Python where you can do as you please without fear of s
 If you have questions about the mathematics please send a mail to **``willyrv@gmail.com``**.
 
 If you have questions about the genetic algorithm and/or the code please send a mail to **``maxhalford25@gmail.com``**.
+
+License
+
+Open source licensed under the MIT license.

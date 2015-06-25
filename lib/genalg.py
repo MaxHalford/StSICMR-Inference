@@ -49,7 +49,7 @@ class Individual:
         # The fitness is the difference between both
         self.fitness = np.sum((modelIntegral - referenceIntegral) ** 2)
 
-    def mutate(self, rate=1):
+    def mutate(self, rate):
         '''
         Randomly mutate islands, times, migrations rates or both. The
         mutation rates can be manually specified here. The general idea
@@ -146,7 +146,7 @@ class Individual:
 class Population:
 
     def __init__(self, Model, times, lambdas, maxIslands, switches,
-                 size=1000, repetitions=1, method='least_squares'):
+                 size, repetitions, rate, method='least_squares'):
         ''' List of models for a given number of islands. '''
         # Timeframe to study
         self.times = np.array(times)
@@ -156,6 +156,8 @@ class Population:
         self.integral = integral(self.times, self.lambdas)
         # Number of switches
         self.switches = switches
+        # Mutation rate
+        self.rate = rate
         # Fitness method
         self.method = method
         # Create initial random individuals
@@ -183,10 +185,6 @@ class Population:
                 indi.evaluate_integral(self.times, self.integral)
         self.sort(index)
 
-    def elite(self, size, index):
-        ''' Simply the best. '''
-        return self.individuals[index][:size]
-
     def tournament(self, size, tournamentSize, index):
         ''' Tournament selection, the parameters are not so crucial. '''
         newIndividuals = []
@@ -211,7 +209,7 @@ class Population:
                     # Enhance
                     for _ in range(5):
                         newIndividual = deepcopy(individual)
-                        newIndividual.mutate()
+                        newIndividual.mutate(self.rate)
                         newIndividuals.append(newIndividual)
                 # Renew to population
                 self.individuals[i] = newIndividuals
