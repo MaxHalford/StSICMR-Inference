@@ -10,7 +10,7 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 
 ## Setup
 
-All of the code has been tested on Python 3.4 and Ubuntu 14.04. This should work fine on a different OS, however Python 3.x is highly recommended.
+All of the code has been tested on Python 3.4 and Ubuntu 14.04. This should work fine on a different OS, however Python 3.x is highly recommended. You can either use your current Python installation or use a virtual environment.
 
 ### Normal
 
@@ -24,7 +24,7 @@ The following module versions were used, that said older and newer versions have
 If you do not have them installed type
 
 ```sh
-cd /StSICMR-Inference
+cd StSICMR-Inference
 pip3 install -r requirements.txt
 ```
 	
@@ -33,7 +33,7 @@ If you don't have ``pip`` installed then you can install the modules manually, t
 In order to compile some Python code into C code you also have to type
 
 ```sh
-cd /lib/cython/
+cd lib/cython/
 ./compile.sh
 ```
 
