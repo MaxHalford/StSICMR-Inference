@@ -2,11 +2,11 @@
 
 ## Symmetrical Island Model with Changes in Migration Rates - Inference
 
-The Symmentrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by [Oliver Mazet](http://fr.viadeo.com/fr/profile/olivier.mazet1) and [Lounès Chikhi](https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi) with their research team.
+The Symmetrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by [Oliver Mazet](http://fr.viadeo.com/fr/profile/olivier.mazet1) and [Lounès Chikhi](https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi) with their research team.
 
 This repository supposes that you are familiar with the [PSMC algorithm](http://www.nature.com/nature/journal/v475/n7357/full/nature10231.html) developped by [Richard Durbin](https://www.wikiwand.com/en/Richard_M._Durbin) and [Heng Li](https://www.wikiwand.com/en/Heng_Li).
 
-The method tries to fit the model to a PSMC history produced with [Heng Li's algorithm](https://github.com/lh3/psmc). It starts by extracting the times and the lambda values of the last iteration from ``.psmc`` file. Then it normalizes the lambda value so that they start at 1 (because the model is normalized to begin at 1 also).
+The method tries to fit the model to a PSMC timeline produced with [Heng Li's algorithm](https://github.com/lh3/psmc). It starts by extracting the times and the lambda values of the last iteration from a ``.psmc`` file. Then it normalizes the lambda value so that they start at 1 (because the model is normalized to begin at 1 also). For the fitting part it uses a [genetic algorithm](http://www.wikiwand.com/en/Genetic_algorithm) using [tournament selection](https://www.wikiwand.com/en/Tournament_selection). The implementation is done in Python 3.4 and is designed to be comprehensible and easy to edit. I wrote a [tutorial on genetic algorithms](http://maxhalford.com/resources/notebooks/genetic-algorithms.html) to explain how I code genetic algorithms with Python.
 
 ## Setup
 
@@ -74,26 +74,47 @@ This creates a sandboxed Python where you can do as you please without fear of s
 
 ### Command line arguments
 
-The main script is called ``infer`` and is written in Python 3.
+#### Infer
 
-| Argument | Name        | Description                                                  |
-|----------|-------------|--------------------------------------------------------------|
-| -v       | Version     | Get the version of the script.                               |
-| -n       | Islands     | Maximal number of islands for the first generation.          |
-| -s       | Switches    | Number of switches for the model.                            |
-| -p       | Size        | Initial generation size.                                     |
-| -r       | Repetitions | Number of times to repeat the process.                       |
-| -g       | Generations | Number of iterations for each population.                    |
-| -u       | Rate        | Rate at which the parameters mutate.                         |
-| -m       | Method      | Method for evaluating the fits.                              |
-| -k       | Keep        | Set to True to save the inference as a plot and a JSON file. |
-| -o       | Outfile     | Override name of output files.                               |
+The main script is called ``infer`` and guesses the parameters for a given PSMC timeline.
+
+| Argument | Name        | Description                                                  | Default    |
+|----------|-------------|--------------------------------------------------------------|------------|
+| -v       | Version     | Get the version of the script.                               |            |
+| -n       | Islands     | Maximal number of islands for the first generation.          | 100        |
+| -s       | Switches    | Number of switches for the model.                            | 0          |
+| -p       | Size        | Initial generation size.                                     | 1000       |
+| -r       | Repetitions | Number of times to repeat the process.                       | 1          |
+| -g       | Generations | Number of iterations for each population.                    | 100        |
+| -u       | Rate        | Rate at which the parameters mutate.                         | 1          |
+| -m       | Method      | Method for evaluating the fits.                              | 'integral' |
+| -k       | Keep        | Set to True to save the inference as a plot and a JSON file. | 'False'    |
+| -o       | Outfile     | Override name of output files.                               |            |
+
+The initial number of islands (``-n``) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (``-p``) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (``-r``) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (``g``). The mutation rate (``u``) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (``m``) for measuring the distance between two curves:
+
+- the least squares on the vectors which doesn't take into account the abscissa (``'least_squares'``).
+- the least squares on the functions which does take into account the abscissa (``'integral'``).
+
+If the keep argument (``-k``) is set to ``'True'`` then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (``-o``) for overriding the name given to the saved files.
+
+#### Manual
+
+The other script called ``manual`` is for visualizing a model with user-defined parameters.
+
+| Argument | Name            |
+|----------|-----------------|
+| -n       | Islands         |
+| -T       | Switch times    |
+| -M       | Migration rates |
+| -k       | Keep            |
+| -o       | Override        |
 
 ### Examples
 
 The following commands use PSMC files provided by [Willy Rodriguez](https://github.com/willyrv).
 
-#### First example
+#### First example - 0 switches
 
 ```sh
 ./infer examples/example1.psmc -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
@@ -101,7 +122,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 
 ![Example 1](examples/example1_0_switch.png)
 
-#### Second example
+#### Second example - 3 switches
 
 ```sh
 ./infer examples/example2.psmc -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
@@ -109,7 +130,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 
 ![Example 2](examples/example2_3_switch.png)
 
-### Manual
+##### Third example - Manual
 
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
@@ -121,37 +142,40 @@ You can also try to fit the model to the PSMC curve yourself. Make sure to give 
 
 ### Advice
 
-If the algorithm seems to fail
+If the algorithm seems to fail you can try to increase the mutation rate. Often is the case this will enable it to find a better area. However a high mutation rate removes precision from the algorithm.
 
 ## Architecture & explanation
 
-    StSICMR-Inference/
-        -results/
-        -lib/
-            -cython/
-                -build/
-                    -temp.linux-x86_64-3.4/
-                        -cythonized.o
-                -profile.sh
-                -compile.sh
-                -setup.py
-                -cythonized.pyx
-                -cythonized.c
-            -__pycache__/
-            -__init__.py
-            -cythonized.so
-            -plotting.py
-            -model.py
-            -psmcfit.py
-            -genalg.py
-        -README.md
-        -infer
-        -requirements.txt
-        -LICENSE
-        -example.psmc
-        -architecture.md
+    StSICMR-Inference
+    ├───┐ lib
+    │   ├───┐ cython
+    │   │   ├───┐ build
+    │   │   │   └───┐ temp.linux-x86_64-3.4
+    │   │   │       └─── cythonized.o
+    │   │   ├─── compile.sh
+    │   │   ├─── setup.py
+    │   │   ├─── cythonized.pyx
+    │   │   └─── cythonized.c
+    │   ├─── __init__.py
+    │   ├─── cythonized.so
+    │   ├─── plotting.py
+    │   ├─── model.py
+    │   ├─── psmcfit.py
+    │   └─── genalg.py
+    ├─── README.md
+    ├─── infer
+    ├─── requirements.txt
+    ├─── LICENSE
+    └─── manual
 
-[cprofilev](https://github.com/ymichael/cprofilev)
+The two main scripts (``infer`` and ``manual``) are in the top-level of the directory. In the ``lib`` folder is where the heavy-lifting is being done:
+
+- ``model.py`` contains the StSCMIR class where the mathematics are done. 
+- ``psmcfit.py`` is for opening and parsing a ``.psmc`` file.
+- ``genalg.py`` tries to find good parameters for the model to fit a PSMC timeline.
+- ``plotting.py`` plots a model and a PSMC timeline on the same chart.
+
+One of the flaws of genetic algorithms is their computational cost. The ``cython`` folder aims at speeding up some of the mathematics done in the ``model.py`` script (for example eigenvalues and diagonalization). For the moment I haven't done much work here (I want to learn how to do good C code) but I will be in the future. If ever you want to add some C code you can use [cprofilev](https://github.com/ymichael/cprofilev) to check what functions are taking the most time. Once you have added code to ``cythonized.pyx`` you can compile it to C code with ``compile.sh`` script, it's as easy as that.
 
 ## Contact
 

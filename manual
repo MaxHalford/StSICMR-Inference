@@ -14,13 +14,13 @@ parser.add_argument('-v', '--version', action='version',
 parser.add_argument('psmc', type=str,
                       help='Pathname of directory to analyze.')
 # Islands
-parser.add_argument('-n', '-N', '-islands', action='store',
+parser.add_argument('-n', action='store',
                     dest='islands', type=int, help='Number of islands.')
 # Times
-parser.add_argument('-t', '-T', '-times', nargs='+', dest='times',
+parser.add_argument('-T', nargs='+', dest='times',
                     help='Times of migration rate changes.', type=float)
 # Rates
-parser.add_argument('-m', '-M', '-rates', nargs='+', dest='rates',
+parser.add_argument('-M', nargs='+', dest='rates',
                     help='Migration rates.', type=float)
 # Plot and JSON
 parser.add_argument('-k', action='store', dest='keep', type=str,
