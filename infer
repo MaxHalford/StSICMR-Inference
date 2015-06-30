@@ -12,14 +12,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--version', action='version',
                     version='%(prog)s 1.0')
 # PSMC file
-required = parser.add_argument_group('required arguments')
-required.add_argument('-f', action='store', dest='psmc', type=str,
-                    help='PSMC file to fit.', required=True)
+parser.add_argument('psmc', type=str,
+                      help='Pathname of directory to analyze.')
 # Islands
-parser.add_argument('-i', action='store', dest='islands', type=int,
+parser.add_argument('-n', action='store', dest='islands', type=int,
                     default=100,
-                    help="""Number of maximal islands for the first
-                            generation (not critical).""")
+                    help="""Maximal number of islands for the first
+                            generation.""")
 # Switches
 parser.add_argument('-s', action='store', dest='switches', type=int,
                     default=0,
@@ -51,6 +50,10 @@ parser.add_argument('-k', action='store', dest='keep', type=str,
                     default='False',
                     help="""Set to True to save the inference as a plot
                             and a JSON file.""")
+# Outfile
+parser.add_argument('-o', action='store', dest='outfile', type=str,
+                    help='Override name of output files.')
+
 parameters = parser.parse_args()
 
 data = psmcfit.get_psmc_history(parameters.psmc)
@@ -72,10 +75,15 @@ pop = genalg.Population(model.StSICMR, times, lambdas,
 pop.enhance(parameters.generations)
 # Plot the best one
 if parameters.keep == 'True':
+    if parameters.outfile is None:
+        path = parameters.psmc.split('/')
+        file = path[-1].split('.')[0]
+        path = '/'.join(path[:-1])
+        fileName = '{0}/{1}_{2}_switch'.format(path, file, parameters.switches)
+    else:
+        fileName = parameters.outfile
     plotting.plotModel(pop.best.model, times, lambdas, logScale=True,
-                       save='examples/{0}_{1}_switch.png'.format(parameters.psmc.split('/')[-1].split('.')[0],
-                                                 parameters.switches))
-    pop.best.save('examples/{0}_{1}_switch'.format(parameters.psmc.split('/')[-1].split('.')[0],
-                                                 parameters.switches))
+                       save='{0}.png'.format(fileName))
+    pop.best.model.save(fileName)
 else:
     plotting.plotModel(pop.best.model, times, lambdas, logScale=True)

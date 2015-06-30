@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May  4 14:16:22 2015
-
-@author: willy, max
-"""
-
 import numpy as np
 import bisect
+import json
 
 from lib import cythonized as cy
 
@@ -19,37 +13,37 @@ class StSICMR:
     in the population history.
     """
 
-    def __init__(self, n, T_list, M_list):
+    def __init__(self, n, T, M):
         # Number of islands
         self.n = n
         # Times of migration rates changes
-        self.T_list = np.array(T_list)
+        self.T = np.array(T)
         # Migrations rates
-        self.M_list = np.array(M_list)
+        self.M = np.array(M)
         # Tuples with the form (A,D,A_inv) for every migration rate
-        self.diagonalized_Q_list = [cy.diagonalize(n, m) for m in M_list]
-        # We store the value of P_{T_i-T_{i-1}} for each value in T_list
-        self.Pt_list = [1] + [self.exponential_Q(T_list[i]-T_list[i-1], i-1)
-                              for i in range(1, len(T_list))]
+        self.diagonalized_Q_list = [cy.diagonalize(n, m) for m in M]
+        # We store the value of P_{T_i-T_{i-1}} for each value in T
+        self.PT = [1] + [self.exponential_Q(T[i]-T[i-1], i-1)
+                              for i in range(1, len(T))]
         # We store the cumulative product of P_{T_i-T_{i-1}}
-        self.cumprod_Pt_list = [1]
-        for i in self.Pt_list[1:]:
-            self.cumprod_Pt_list.append(np.dot(self.cumprod_Pt_list[-1], i))
+        self.cumprod_PT = [1]
+        for i in self.PT[1:]:
+            self.cumprod_PT.append(np.dot(self.cumprod_PT[-1], i))
 
-    def update(self, n, T_list, M_list):
+    def update(self, n, T, M):
         '''
         Update a model with new parameters for genalg optimization, this
         saves a bit of time compared to instantiating a new class.
         '''
         self.n = n
-        self.T_list = np.array(T_list)
-        self.M_list = np.array(M_list)
-        self.diagonalized_Q_list = [cy.diagonalize(n, m) for m in M_list]
-        self.Pt_list = [1] + [self.exponential_Q(T_list[i]-T_list[i-1], i-1)
-                              for i in range(1, len(T_list))]
-        self.cumprod_Pt_list = [1]
-        for i in self.Pt_list[1:]:
-            self.cumprod_Pt_list.append(np.dot(self.cumprod_Pt_list[-1], i))
+        self.T = np.array(T)
+        self.M = np.array(M)
+        self.diagonalized_Q_list = [cy.diagonalize(n, m) for m in M]
+        self.PT = [1] + [self.exponential_Q(T[i]-T[i-1], i-1)
+                              for i in range(1, len(T))]
+        self.cumprod_PT = [1]
+        for i in self.PT[1:]:
+            self.cumprod_PT.append(np.dot(self.cumprod_PT[-1], i))
 
     def exponential_Q(self, t, i):
         """
@@ -65,9 +59,9 @@ class StSICMR:
 
     def evaluate_Pt(self, t):
         ''' Get the time interval that contains t. '''
-        i = bisect.bisect_right(self.T_list, t) - 1
-        return np.dot(self.cumprod_Pt_list[i],
-                      self.exponential_Q(t-self.T_list[i], i))
+        i = bisect.bisect_right(self.T, t) - 1
+        return np.dot(self.cumprod_PT[i],
+                      self.exponential_Q(t-self.T[i], i))
 
     def cdf_T2s(self, t):
         '''
@@ -119,3 +113,15 @@ class StSICMR:
         '''
         Pt = self.evaluate_Pt(t)
         return np.true_divide(1 - Pt[1][2], Pt[1][0])
+        
+    def save(self, path):
+        ''' Save the details of the model to a JSON file. '''
+        # Create a dictionary
+        DNA = {'n': int(self.n),
+               'T': list(map(float, self.T)),
+               'M': list(map(float, self.M))}
+        # Save it a s a .json file
+        with open(path + '.json', 'w') as outfile:
+            json.dump(DNA, outfile)
+        # Tell the user the inference has been saved
+        print ('Model parameters saved to {0}.json.'.format(path))

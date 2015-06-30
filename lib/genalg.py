@@ -1,7 +1,6 @@
 import random as rand
 import numpy as np
 from copy import deepcopy
-import json
 
 def integral(X, Y):
     ''' Calculate distance from step function to abscissa line. '''
@@ -125,22 +124,6 @@ class Individual:
         # Verify that n is greater or equal to 2.
         while not self.n >= 2:
             self.n = n + np.random.choice((-variance, variance))
-
-    def save(self, path):
-        ''' Save the DNA of the individual (the parameters). '''
-        # Create a dictionary
-        DNA = {'n': int(self.n),
-               'T': list(self.T),
-               'M': list(self.M),
-               'method': {'name': 'Genetic Algorithm',
-                          'fitness': self.fitness
-                          }
-               }
-        # Save it a s a .json file
-        with open(path + '.json', 'w') as outfile:
-            json.dump(DNA, outfile)
-        # Tell the user the inference has been saved
-        print ('Inference saved to {0}'.format(path))
 
 
 class Population:

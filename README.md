@@ -4,7 +4,9 @@
 
 The Symmentrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by [Oliver Mazet](http://fr.viadeo.com/fr/profile/olivier.mazet1) and [Lounès Chikhi](https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi) with their research team.
 
-This repository supposes that you are familiar with 
+This repository supposes that you are familiar with the [PSMC algorithm](http://www.nature.com/nature/journal/v475/n7357/full/nature10231.html) developped by [Richard Durbin](https://www.wikiwand.com/en/Richard_M._Durbin) and [Heng Li](https://www.wikiwand.com/en/Heng_Li).
+
+The method tries to fit the model to a PSMC history produced with [Heng Li's algorithm](https://github.com/lh3/psmc). It starts by extracting the times and the lambda values of the last iteration from ``.psmc`` file. Then it normalizes the lambda value so that they start at 1 (because the model is normalized to begin at 1 also).
 
 ## Setup
 
@@ -72,6 +74,21 @@ This creates a sandboxed Python where you can do as you please without fear of s
 
 ### Command line arguments
 
+The main script is called ``infer`` and is written in Python 3.
+
+| Argument | Name        | Description                                                  |
+|----------|-------------|--------------------------------------------------------------|
+| -v       | Version     | Get the version of the script.                               |
+| -n       | Islands     | Maximal number of islands for the first generation.          |
+| -s       | Switches    | Number of switches for the model.                            |
+| -p       | Size        | Initial generation size.                                     |
+| -r       | Repetitions | Number of times to repeat the process.                       |
+| -g       | Generations | Number of iterations for each population.                    |
+| -u       | Rate        | Rate at which the parameters mutate.                         |
+| -m       | Method      | Method for evaluating the fits.                              |
+| -k       | Keep        | Set to True to save the inference as a plot and a JSON file. |
+| -o       | Outfile     | Override name of output files.                               |
+
 ### Examples
 
 The following commands use PSMC files provided by [Willy Rodriguez](https://github.com/willyrv).
@@ -79,7 +96,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 #### First example
 
 ```sh
-python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+./infer examples/example1.psmc -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
 ```
 
 ![Example 1](examples/example1_0_switch.png)
@@ -87,12 +104,24 @@ python3 infer -f examples/example1.psmc -i 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m l
 #### Second example
 
 ```sh
-python3 infer -f examples/example2.psmc -i 100 -s 4 -p 1000 -r 1 -g 100 -u 2 -m integral -k True
+./infer examples/example2.psmc -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
 ```
 
 ![Example 2](examples/example2_3_switch.png)
 
+### Manual
+
+You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
+
+```sh
+./manual examples/example3.psmc -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
+```
+
+![Example 3](examples/example3_manual.png)
+
 ### Advice
+
+If the algorithm seems to fail
 
 ## Architecture & explanation
 
@@ -132,4 +161,4 @@ If you have questions about the genetic algorithm and/or the code please send a 
 
 ## License
 
-See [LICENSE](LICENSE)
+See the [LICENSE file](LICENSE).
