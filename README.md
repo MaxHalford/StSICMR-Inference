@@ -207,6 +207,8 @@ The two main scripts (``infer.py`` and ``manual.py``) are in the top-level of th
 - ``genalg.py`` tries to find good parameters for the model to fit a PSMC timeline.
 - ``plotting.py`` plots a model and a PSMC timeline on the same chart.
 
+The reason why ``lib`` contains the ``ìnference`` folder is if ever there will be another method of infering the parameters, it doesn't necessarily have to be a genetic algorithm. However the distance measures between the target curve and the model curve will always be the same, hence the ``distance.py`` script that can easily be reused with other methods.
+
 One of the flaws of genetic algorithms is their computational cost. The ``cython`` folder aims at speeding up some of the mathematics done in the ``model.py`` script (for example eigenvalues and diagonalization). For the moment I haven't done much work here (I want to learn how to do good C code) but I will be in the future. If ever you want to add some C code you can use [cprofilev](https://github.com/ymichael/cprofilev) to check what functions are taking the most time. Once you have added code to ``cythonized.pyx`` you can compile it to C code with ``compile.sh`` script, it's as easy as that.
 
 ## Contact
