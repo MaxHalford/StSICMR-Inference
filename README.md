@@ -11,9 +11,13 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 ## Table of Contents
 
 [Setup](#setup)
+[Usage](#usage)
+[Architecture](#architecture)
+[Output chart](#output chart)
+[Contact](#contact)
+[License](#license)
 
 ## Setup
-## Usage
 
 All of the code has been tested with both Python 2 and Python 3. People have successfully used it on Ubuntu, Mac OS and Windows. You can either use your current Python installation, a virtual environment or the [Anaconda distribution](https://store.continuum.io/cshop/anaconda/).
 
@@ -138,11 +142,21 @@ python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
 
 ![Example 3](examples/example3_manual.png)
 
-### Advice
+### Taming the genetic algorithm
 
-If the algorithm seems to fail you can try to increase the mutation rate. Often is the case this will enable it to find a better area. However a high mutation rate removes precision from the algorithm.
+- Increasing the generation size can have an impact, the longer the algorithm runs the lower the chance that the algorithm won't improve the model.
+- If the algorithm seems to fail you can try to increase the mutation rate. Often is the case this will enable it to find a better area. However a high mutation rate removes precision from the algorithm.
+- *Trying again* isn't a bad idea when using genetic algorithms.
+- The initial population size can be important, the higher it is and the more of the search space will be explored at first.
+The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/Tournament_selection) for choosing which individuals will breed new individuals. You can configure the parameters of the tournament in the ``lib/inference/tournamentOptions.json`` file:
+	- ``"rounds"`` is the number of individuals that will breed new individuals.
+	- ``"roundSize"`` is the size of each tournament.
+	- ``"offspring"``is the quantity of individuals the chosen individuals will breed.
+	There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random 		sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small 			tournaments allow weaker individuals to go through (which isn't necessarily a bad thing, 					[simulated annealing](http://www.wikiwand.com/en/Simulated_annealing) does the same thing).
 
-## Architecture & explanation
+## Output chart
+
+## Architecture
 
     StSICMR-Inference
     ├───┐ examples
