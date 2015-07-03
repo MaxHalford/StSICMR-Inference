@@ -12,8 +12,9 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 
 - [Setup](#setup)
 - [Usage](#usage)
+- [Examples](#example)
+- [Output](#output)
 - [Architecture](#architecture)
-- [Output chart](#output chart)
 - [Contact](#contact)
 - [License](#license)
 
@@ -71,9 +72,7 @@ This is probably the easiest way if you don't have Python installed. Simply [dow
 
 ## Usage
 
-### Command line arguments
-
-#### Infer
+### Infer
 
 The main script is called ``infer`` and guesses the parameters for a given PSMC timeline.
 
@@ -97,7 +96,7 @@ The initial number of islands (``-n``) is not important as the algorithm usually
 
 If the keep argument (``-k``) is set to ``'True'`` then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (``-o``) for overriding the name given to the saved files.
 
-#### Manual
+### Manual
 
 The other script called ``manual`` is for visualizing a model with user-defined parameters.
 
@@ -108,39 +107,6 @@ The other script called ``manual`` is for visualizing a model with user-defined 
 | -M       | Migration rates |
 | -k       | Keep            |
 | -o       | Override        |
-
-### Examples
-
-The following commands use PSMC files provided by [Willy Rodriguez](https://github.com/willyrv).
-
-#### First example - 0 switches
-
-```sh
-python convert examples/example1.psmc
-python infer.py examples/example1.csv -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
-```
-
-![Example 1](examples/example1_0_switch.png)
-
-#### Second example - 3 switches
-
-```sh
-python convert examples/example2.psmc
-python infer.py examples/example2.csv -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
-```
-
-![Example 2](examples/example2_3_switch.png)
-
-##### Third example - Manual
-
-You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
-
-```sh
-python convert examples/example3.psmc
-python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
-```
-
-![Example 3](examples/example3_manual.png)
 
 ### Taming the genetic algorithm
 
@@ -154,7 +120,42 @@ The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/To
 	- ``"offspring"`` is the quantity of individuals the chosen individuals will breed.
 	There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random 		sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small 			tournaments allow weaker individuals to go through (which isn't necessarily a bad thing, 					[simulated annealing](http://www.wikiwand.com/en/Simulated_annealing) does the same thing).
 
-## Output chart
+## Examples
+
+The following commands use PSMC files provided by [Willy Rodriguez](https://github.com/willyrv).
+
+### First example - 0 switches
+
+```sh
+python convert examples/example1.psmc
+python infer.py examples/example1.csv -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+```
+
+![Example 1](examples/example1_0_switch.png)
+
+### Second example - 3 switches
+
+```sh
+python convert examples/example2.psmc
+python infer.py examples/example2.csv -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
+```
+
+![Example 2](examples/example2_3_switch.png)
+
+### Third example - Manual
+
+You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
+
+```sh
+python convert examples/example3.psmc
+python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
+```
+
+![Example 3](examples/example3_manual.png)
+
+## Output
+
+Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is made for easily doing so. The default settings produce the charts you see in the [Examples](#examples) section. Most of the parameters are not too hard to understand. I would recommend reading the documentation from [matplotlib](http://matplotlib.org/contents.html) if you want to do something complicated.
 
 ## Architecture
 
