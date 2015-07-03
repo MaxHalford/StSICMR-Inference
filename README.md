@@ -8,7 +8,12 @@ This repository supposes that you are familiar with the [PSMC algorithm](http://
 
 The method tries to fit the model to a PSMC timeline produced with [Heng Li's algorithm](https://github.com/lh3/psmc). It starts by extracting the times and the lambda values of the last iteration from a ``.psmc`` file. Then it normalizes the lambda value so that they start at 1 (because the model is normalized to begin at 1 also). For the fitting part it uses a [genetic algorithm](http://www.wikiwand.com/en/Genetic_algorithm) using [tournament selection](https://www.wikiwand.com/en/Tournament_selection). The implementation is done in Python 3.4 and is designed to be comprehensible and easy to edit. I wrote a [tutorial on genetic algorithms](http://maxhalford.com/resources/notebooks/genetic-algorithms.html) to explain how I code genetic algorithms with Python.
 
+## Table of Contents
+
+[Setup](#setup)
+
 ## Setup
+## Usage
 
 All of the code has been tested with both Python 2 and Python 3. People have successfully used it on Ubuntu, Mac OS and Windows. You can either use your current Python installation, a virtual environment or the [Anaconda distribution](https://store.continuum.io/cshop/anaconda/).
 
