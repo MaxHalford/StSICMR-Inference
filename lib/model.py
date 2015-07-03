@@ -2,8 +2,6 @@ import numpy as np
 import bisect
 import json
 
-from lib import cythonized as cy
-
 class StSICMR:
     """
     This class represents the Continuous Time Markov Chain of a Structured
@@ -21,7 +19,7 @@ class StSICMR:
         # Migrations rates
         self.M = np.array(M)
         # Tuples with the form (A,D,A_inv) for every migration rate
-        self.diagonalized_Q_list = [cy.diagonalize(n, m) for m in M]
+        self.diagonalized_Q_list = [self.diagonalize(n, m) for m in M]
         # We store the value of P_{T_i-T_{i-1}} for each value in T
         self.PT = [1] + [self.exponential_Q(T[i]-T[i-1], i-1)
                               for i in range(1, len(T))]
@@ -38,12 +36,27 @@ class StSICMR:
         self.n = n
         self.T = np.array(T)
         self.M = np.array(M)
-        self.diagonalized_Q_list = [cy.diagonalize(n, m) for m in M]
+        self.diagonalized_Q_list = [self.diagonalize(n, m) for m in M]
         self.PT = [1] + [self.exponential_Q(T[i]-T[i-1], i-1)
                               for i in range(1, len(T))]
         self.cumprod_PT = [1]
         for i in self.PT[1:]:
             self.cumprod_PT.append(np.dot(self.cumprod_PT[-1], i))
+            
+    def diagonalize(self, n, M):
+        """
+        For a given Q wich depends on the values of n and M, we compute
+        the "diagonalized" expression of Q. This method returns three
+        matrixes A, D and A^{-1} such that Q = ADA^{-1}.
+        """
+        Q = np.array([[-M - 1,    M,      1],
+                     [M / (n-1), -M / (n-1), 0],
+                     [0,    0,  0]])
+        eigen_val, eigen_vect = np.linalg.eig(Q)
+        D = np.diag(eigen_val)
+        A = eigen_vect
+        A_inv = np.linalg.inv(A)
+        return (A, D, A_inv)
 
     def exponential_Q(self, t, i):
         """

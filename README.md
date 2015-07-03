@@ -10,7 +10,7 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 
 ## Setup
 
-All of the code has been tested on Python 3.4 and Ubuntu 14.04. This should work fine on a different OS, however Python 3.x is highly recommended. You can either use your current Python installation or use a virtual environment.
+All of the code has been tested on Python 3.4 and Ubuntu 14.04. This should work fine on a different OS, however Python 3.x is highly recommended. You can either use your current Python installation, a virtual environment or the []
 
 ### Normal
 
@@ -117,7 +117,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 #### First example - 0 switches
 
 ```sh
-./infer examples/example1.psmc -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+python infer examples/example1.psmc -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
 ```
 
 ![Example 1](examples/example1_0_switch.png)
@@ -125,7 +125,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 #### Second example - 3 switches
 
 ```sh
-./infer examples/example2.psmc -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
+python infer examples/example2.psmc -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
 ```
 
 ![Example 2](examples/example2_3_switch.png)
@@ -135,7 +135,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
 ```sh
-./manual examples/example3.psmc -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
+python manual examples/example3.psmc -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
 ```
 
 ![Example 3](examples/example3_manual.png)
