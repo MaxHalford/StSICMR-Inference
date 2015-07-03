@@ -10,12 +10,12 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 
 ## Table of Contents
 
-[Setup](#setup)
-[Usage](#usage)
-[Architecture](#architecture)
-[Output chart](#output chart)
-[Contact](#contact)
-[License](#license)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Architecture](#architecture)
+- [Output chart](#output chart)
+- [Contact](#contact)
+- [License](#license)
 
 ## Setup
 
@@ -151,7 +151,7 @@ python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
 The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/Tournament_selection) for choosing which individuals will breed new individuals. You can configure the parameters of the tournament in the ``lib/inference/tournamentOptions.json`` file:
 	- ``"rounds"`` is the number of individuals that will breed new individuals.
 	- ``"roundSize"`` is the size of each tournament.
-	- ``"offspring"``is the quantity of individuals the chosen individuals will breed.
+	- ``"offspring"`` is the quantity of individuals the chosen individuals will breed.
 	There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random 		sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small 			tournaments allow weaker individuals to go through (which isn't necessarily a bad thing, 					[simulated annealing](http://www.wikiwand.com/en/Simulated_annealing) does the same thing).
 
 ## Output chart
