@@ -1,13 +1,11 @@
 import random as rand
 import numpy as np
 from copy import deepcopy
+from lib.inference import distance
+import json
 
-def integral(X, Y):
-    ''' Calculate distance from step function to abscissa line. '''
-    rectangle = lambda x0, x1, y: (x1 - x0) * y / x0
-    integral = [rectangle(X[i], X[i+1], Y[i]) for i in range(len(X)-1)]
-    return np.array(integral)
-
+with open('lib/inference/tournamentOptions.json') as tournamentOptions:   
+    tournament = json.load(tournamentOptions)
 
 class Individual:
 
@@ -27,26 +25,19 @@ class Individual:
         # Fitness
         self.fitness = None
 
-    def evaluate_least_squares(self, times, lambdas):
-        ''' Evaluate how close two vectors are. '''
+    def evaluate(self, times, method, referenceIntegral=None,
+                 lambdas=None):
+        ''' Evaluate how close two curves are. '''
         # Update the model
         self.model.update(self.n, self.T, self.M)
-        # Compute the differences
-        modelLamdbas = [self.model.lambda_s(t) for t in times]
-        differences = np.array(lambdas) - np.array(modelLamdbas)
-        # The fitness is the sum of the squared differences
-        self.fitness = np.sum(np.square(differences))
-
-    def evaluate_integral(self, times, referenceIntegral):
-        ''' Evaluate how close two functions are. '''
-        # Update the model
-        self.model.update(self.n, self.T, self.M)
-        # Get the new lambdas
-        lambdas = [self.model.lambda_s(t) for t in times]
-        # Compute the model integral
-        modelIntegral = integral(times, lambdas)
-        # The fitness is the difference between both
-        self.fitness = np.sum((modelIntegral - referenceIntegral) ** 2)
+        # Compute the fitness according to a chosen distance
+        if method == 'integral':
+            self.fitness = distance.evaluate_integral(self.model, times,
+                                                      referenceIntegral)
+        else:
+            self.fitness = distance.evaluate_least_squares(self.model,
+                                                           times,
+                                                           lambdas)
 
     def mutate(self, rate):
         '''
@@ -136,7 +127,7 @@ class Population:
         # PSMC distribution to fit
         self.lambdas = np.array(lambdas)
         # Calculate integral for comparing
-        self.integral = integral(self.times, self.lambdas)
+        self.integral = distance.integral(self.times, self.lambdas)
         # Number of switches
         self.switches = switches
         # Mutation rate
@@ -162,19 +153,21 @@ class Population:
     def evaluate(self, index):
         ''' Evaluate all the individuals. '''
         for indi in self.individuals[index]:
-            if self.method == 'least_squares':
-                indi.evaluate_least_squares(self.times, self.lambdas)
-            elif self.method == 'integral':
-                indi.evaluate_integral(self.times, self.integral)
+            if self.method == 'integral':
+                indi.evaluate(self.times, method='integral',
+                              referenceIntegral=self.integral)
+            else:
+                indi.evaluate(self.times, method='least_squares',
+                              lambdas=self.lambdas)
         self.sort(index)
 
-    def tournament(self, size, tournamentSize, index):
+    def tournament(self, rounds, roundSize, index):
         ''' Tournament selection, the parameters are not so crucial. '''
         newIndividuals = []
-        for _ in range(size):
+        for _ in range(rounds):
             # Choose random participants for the tournament
             participants = rand.sample(self.individuals[index],
-                                       tournamentSize)
+                                       roundSize)
             # Sort them by fitness
             participants.sort(key=lambda indi: indi.fitness)
             # Append the best to the new list
@@ -186,11 +179,13 @@ class Population:
         for i in range(len(self.individuals)):
             for g in range(generations):
                 newIndividuals = []
-                for individual in self.tournament(20, 10, i):
+                for individual in self.tournament(tournament['rounds'],
+                                                  tournament['roundSize'],
+                                                  i):
                     # Create a copy of the individual
                     newIndividuals.append(deepcopy(individual))
                     # Enhance
-                    for _ in range(5):
+                    for _ in range(tournament['offsprings']):
                         newIndividual = deepcopy(individual)
                         newIndividual.mutate(self.rate)
                         newIndividuals.append(newIndividual)
@@ -201,4 +196,5 @@ class Population:
                 # Check if there is a new best individual
                 if self.individuals[i][0].fitness < self.best.fitness:
                     self.best = deepcopy(self.individuals[i][0])
-                print ('Repetition {0} - Generation {1} done.'.format(i+1, g+1))
+                print ('Repetition {0} - Generation {1} - Best {2}'.format(i+1,
+                       g+1, self.best.fitness))

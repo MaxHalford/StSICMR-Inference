@@ -1,37 +1,57 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import json
 
-plt.style.use('fivethirtyeight')
+with open('lib/chartOptions.json') as chartOptions:    
+    chart = json.load(chartOptions)
+
+if chart['style'] != 'None':
+    plt.style.use(chart['style'])
 
 def plotModel(model, times, lambdas, logScale=False,
               save=None, show=True):
-    ''' Plot a model in green and a determined lambda function in red. '''
+    ''' Plot a target and an inference. '''
     plt.clf()
-    plt.grid(color='white', linestyle='solid')
+    plt.grid(color=chart['grid']['color'],
+             linestyle=chart['grid']['lineStyle'])
     # Evaluate the model at the given time steps
     lambda_s = [model.lambda_s(t) for t in times]
-    # Plot the model in red
-    plt.step(times, lambda_s, label='PSMC Lambda', linewidth=3,
-             where='post', color='red', alpha=0.5)
-    # Plot the lambda function in green
-    plt.step(times, lambdas, label='Model Lambda', linewidth=3,
-             where='post', color='green', alpha=0.5)
-    # Compute the squared error
-    squared_error = np.sum(((lambdas[i] - lambda_s[i]) ** 2
-                          for i in range(len(lambdas))))
-    plt.title('Least squares: ' + str(squared_error))
+    # Plot the target
+    target = chart['target']
+    if target['style'] == 'step': 
+        plt.step(times, lambdas, label=target['label'],
+                 linewidth=target['width'], color=target['color'],
+                 alpha=target['alpha'], where='post')
+    elif target['style'] == 'smooth':
+        plt.plot(times, lambdas, label=target['label'],
+                linewidth=target['width'], color=target['color'],
+                alpha=target['alpha'])
+    # Plot the inference
+    inference = chart['inference']
+    if inference['style'] == 'step': 
+        plt.step(times, lambda_s, label=inference['label'],
+                 linewidth=inference['width'], color=inference['color'],
+                 alpha=inference['alpha'], where='post')
+    elif inference['style'] == 'smooth':
+        plt.plot(times, lambda_s, label=inference['label'],
+                linewidth=inference['width'], color=inference['color'],
+                alpha=inference['alpha'])
     # Add the migration rate time changes as vertical lines
-    for t in model.T[1:]:
-        plt.axvline(t, linestyle='--', color='gray', alpha=0.5)
+    if chart['migrations']['show'] == 'True':
+        for t in model.T[1:]:
+            plt.axvline(t, linestyle=chart['migrations']['style'],
+                        color=chart['migrations']['color'],
+                        width=chart['migrations']['width'],
+                        alpha=chart['migrations']['alpha'])
     # Set x scale to logarithmic
     if logScale is True:
         plt.xscale('log')
     # Annotate the graph
-    plt.suptitle('Structured model inference of lambda function',
-                 fontsize=14, fontweight='bold')
+    plt.suptitle(chart['title']['text'], fontsize=chart['title']['size'],
+                 fontweight=chart['title']['weight'])
     plt.legend(loc=4)
-    plt.xlabel('Time going backwards')
-    plt.ylabel('Lambda')
+    plt.xlabel(chart['xLabel'])
+    plt.ylabel(chart['yLabel'])
     # Add model information to the top-left corner
     information = '''
     n: {0}
@@ -45,7 +65,7 @@ def plotModel(model, times, lambdas, logScale=False,
     # Save the figure
     if save is not None:
         figure = plt.gcf()
-        figure.set_size_inches(20, 14)
-        plt.savefig(save, dpi=100)
+        figure.set_size_inches(chart['quality']['sizeInches'])
+        plt.savefig(save, dpi=chart['quality']['dpi'])
     if show is True:
         plt.show()

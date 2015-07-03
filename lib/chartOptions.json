@@ -1,0 +1,39 @@
+{
+    "style": "None",
+    "xLabel": "Time going backwards",
+    "yLabel": "Lambda",
+    "migrations": {
+        "show": "True",
+        "style": "--",
+        "color": "gray",
+        "width": 1,
+        "alpha": 0.5
+    },
+    "title": {
+        "text": "Structured model inference of lambda function",
+        "size": 14,
+        "weight": "bold"
+    },
+    "quality": {
+        "sizeInches": [20, 14],
+        "dpi": 100
+    },
+    "grid": {
+        "color": "white",
+        "lineStyle": "solid"
+    },
+    "target": {
+        "style": "step",
+        "color": "green",
+        "width": 3,
+        "alpha": 0.5,
+        "label": "Target"
+    },
+    "inference": {
+        "style": "step",
+        "color": "red",
+        "width": 3,
+        "alpha": 0.5,
+        "label": "Inference"
+    }
+}

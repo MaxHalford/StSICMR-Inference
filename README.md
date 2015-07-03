@@ -10,16 +10,16 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 
 ## Setup
 
-All of the code has been tested on Python 3.4 and Ubuntu 14.04. This should work fine on a different OS, however Python 3.x is highly recommended. You can either use your current Python installation, a virtual environment or the []
+All of the code has been tested with both Python 2 and Python 3. People have successfully used it on Ubuntu, Mac OS and Windows. You can either use your current Python installation, a virtual environment or the [Anaconda distribution](https://store.continuum.io/cshop/anaconda/).
 
-### Normal
+### 1. Normal
 
 The following module versions were used, that said older and newer versions have a good chance of working too.
 	
-	- Cython == 0.22.1
-	- matplotlib == 1.4.3
-	- numpy == 1.9.2
-	- scipy == 0.15.1
+    - matplotlib == 1.4.3
+    - pandas == 0.16.2
+    - Cython == 0.22.1
+    - numpy == 1.9.2
 
 If you do not have them installed type
 
@@ -28,16 +28,9 @@ cd StSICMR-Inference
 pip3 install -r requirements.txt
 ```
 	
-If you don't have ``pip`` installed then you can install the modules manually, this should be easy on any platform as all of them are extremely popular modules. 
+If you don't have ``pip`` installed then you can install the modules manually, this should be easy on any platform as all of them are extremely popular modules.
 
-In order to compile some Python code into C code you also have to type
-
-```sh
-cd lib/cython/
-./compile.sh
-```
-
-### With a virtual environment
+### 2. With a virtual environment
 
 If you want to be safe and not mess with your Python environment you can create a [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/) by doing the following steps.
 
@@ -61,14 +54,11 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-**4. Compile Python code to C code**
-
-```sh
-cd lib/cython
-./compile.sh
-```
-
 This creates a sandboxed Python where you can do as you please without fear of screwing up your setup. The only thing required is to have Python 3.x installed in order to run ``virtualenv env``. To deactivate the virtual environment type ``deactivate``. To activate it type ``source venv/bin/activate``, if you don't the default Python interpreter will be used. You can delete the ``StSICMR-Inference`` folder and it will be as if nothing ever happened.
+
+### 3. Anaconda
+
+This is probably the easiest way if you don't have Python installed. Simply [download Anaconda](http://continuum.io/downloads) for your platform (you can choose between Python 2 or 3). Anaconda includes all the modules necessary so there is nothing else to do.
 
 ## Usage
 
@@ -117,7 +107,8 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 #### First example - 0 switches
 
 ```sh
-python infer examples/example1.psmc -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+python convert examples/example1.psmc
+python infer.py examples/example1.csv -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
 ```
 
 ![Example 1](examples/example1_0_switch.png)
@@ -125,7 +116,8 @@ python infer examples/example1.psmc -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least
 #### Second example - 3 switches
 
 ```sh
-python infer examples/example2.psmc -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
+python convert examples/example2.psmc
+python infer.py examples/example2.csv -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
 ```
 
 ![Example 2](examples/example2_3_switch.png)
@@ -135,7 +127,8 @@ python infer examples/example2.psmc -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m inte
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
 ```sh
-python manual examples/example3.psmc -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
+python convert examples/example3.psmc
+python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
 ```
 
 ![Example 3](examples/example3_manual.png)
@@ -147,26 +140,41 @@ If the algorithm seems to fail you can try to increase the mutation rate. Often 
 ## Architecture & explanation
 
     StSICMR-Inference
+    ├───┐ examples
+    │   ├─── example1.csv
+    │   ├─── example1.psmc
+    │   ├─── example1_0_switch.json
+    │   ├─── example1_0_switch.png
+    │   ├─── example2.csv
+    │   ├─── example2.psmc
+    │   ├─── example2_3_switch.json
+    │   ├─── example2_3_switch.png
+    │   ├─── example3.csv
+    │   ├─── example3.psmc
+    │   ├─── example3_manual.json
+    │   └─── example3_manual.png
     ├───┐ lib
     │   ├───┐ cython
-    │   │   ├───┐ build
-    │   │   │   └───┐ temp.linux-x86_64-3.4
-    │   │   │       └─── cythonized.o
     │   │   ├─── compile.sh
-    │   │   ├─── setup.py
+    │   │   ├─── cythonized.c
     │   │   ├─── cythonized.pyx
-    │   │   └─── cythonized.c
+    │   │   └─── setup.py
+    │   ├───┐ inference
+    │   │   ├─── __init.py__
+    │   │   ├─── distance.py
+    │   │   ├─── genalg.py
+    │   │   └─── tournamentOptions.json
     │   ├─── __init__.py
-    │   ├─── cythonized.so
-    │   ├─── plotting.py
+    │   ├─── chartOptions.json
     │   ├─── model.py
-    │   ├─── psmcfit.py
-    │   └─── genalg.py
-    ├─── README.md
-    ├─── infer
-    ├─── requirements.txt
+    │   ├─── plotting.py
+    │   └─── tools.py
+    ├─── convert.py
+    ├─── infer.py
     ├─── LICENSE
-    └─── manual
+    ├─── manual.py
+    ├─── README.md
+    └─── requirements.txt
 
 The two main scripts (``infer`` and ``manual``) are in the top-level of the directory. In the ``lib`` folder is where the heavy-lifting is being done:
 
