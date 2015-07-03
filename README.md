@@ -72,9 +72,13 @@ This is probably the easiest way if you don't have Python installed. Simply [dow
 
 ## Usage
 
+### Convert
+
+The algorithm requires a CSV file. Most of the time these are to be extracted from PSMC files. The ``convert.py``script can do this, as can be seen in the [Examples](#examples) section. You can use any CSV file, the first column will be considered as the time vector and the second one as the PSMC vector.
+
 ### Infer
 
-The main script is called ``infer`` and guesses the parameters for a given PSMC timeline.
+The main script is called ``infer.py`` and guesses the parameters for a given PSMC timeline.
 
 | Argument | Name        | Description                                                  | Default    |
 |----------|-------------|--------------------------------------------------------------|------------|
@@ -98,7 +102,7 @@ If the keep argument (``-k``) is set to ``'True'`` then the best model will be s
 
 ### Manual
 
-The other script called ``manual`` is for visualizing a model with user-defined parameters.
+The other script called ``manual.py`` is for visualizing a model with user-defined parameters.
 
 | Argument | Name            |
 |----------|-----------------|
@@ -196,10 +200,10 @@ Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is 
     ├─── README.md
     └─── requirements.txt
 
-The two main scripts (``infer`` and ``manual``) are in the top-level of the directory. In the ``lib`` folder is where the heavy-lifting is being done:
+The two main scripts (``infer.py`` and ``manual.py``) are in the top-level of the directory. In the ``lib`` folder is where the heavy-lifting is being done:
 
 - ``model.py`` contains the StSCMIR class where the mathematics are done. 
-- ``psmcfit.py`` is for opening and parsing a ``.psmc`` file.
+- ``tools.py`` is for opening and parsing a ``.psmc`` file.
 - ``genalg.py`` tries to find good parameters for the model to fit a PSMC timeline.
 - ``plotting.py`` plots a model and a PSMC timeline on the same chart.
 
