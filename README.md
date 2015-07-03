@@ -12,7 +12,7 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 
 - [Setup](#setup)
 - [Usage](#usage)
-- [Examples](#example)
+- [Examples](#examples)
 - [Output](#output)
 - [Architecture](#architecture)
 - [Contact](#contact)
