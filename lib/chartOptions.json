@@ -6,7 +6,6 @@
         "show": "True",
         "style": "--",
         "color": "gray",
-        "width": 1,
         "alpha": 0.5
     },
     "title": {

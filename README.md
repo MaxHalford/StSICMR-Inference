@@ -17,6 +17,7 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 - [Architecture](#architecture)
 - [Contact](#contact)
 - [License](#license)
+- [Issues](#issues)
 
 ## Setup
 
@@ -42,29 +43,14 @@ If you don't have ``pip`` installed then you can install the modules manually, t
 
 ### 2. With a virtual environment
 
-If you want to be safe and not mess with your Python environment you can create a [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/) by doing the following steps.
-
-**1. Clone the repository**
+If you want to be safe and not mess with your Python environment you use a [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/) included in the repository.
 
 ```sh
-git clone https://github.com/MaxHalford/StSICMR-Inference
 cd StSICMR-Inference
-```
-	
-**2. Create and activate a virtual environment**
-
-```sh
-virtualenv -p /usr/bin/python3 venv
 source venv/bin/activate
 ```
-	
-**3. Install requirements**
 
-```sh
-pip3 install -r requirements.txt
-```
-
-This creates a sandboxed Python where you can do as you please without fear of screwing up your setup. The only thing required is to have Python 3.x installed in order to run ``virtualenv env``. To deactivate the virtual environment type ``deactivate``. To activate it type ``source venv/bin/activate``, if you don't the default Python interpreter will be used. You can delete the ``StSICMR-Inference`` folder and it will be as if nothing ever happened.
+This uses a sandboxed Python where you can do as you please without fear of screwing up your setup. To deactivate the virtual environment type ``deactivate``. To activate it type ``source venv/bin/activate``, or else the default Python interpreter will be used. You can delete the ``StSICMR-Inference`` folder and it will be as if nothing ever happened.
 
 ### 3. Anaconda
 
@@ -85,15 +71,15 @@ The main script is called ``infer.py`` and guesses the parameters for a given PS
 | -v       | Version     | Get the version of the script.                               |            |
 | -n       | Islands     | Maximal number of islands for the first generation.          | 100        |
 | -s       | Switches    | Number of switches for the model.                            | 0          |
-| -p       | Size        | Initial generation size.                                     | 1000       |
+| -c       | Size        | Maximal population size for the first generation.            | 100        |
+| -p       | Genalg size | Initial generation size.                                     | 1000       |
 | -r       | Repetitions | Number of times to repeat the process.                       | 1          |
 | -g       | Generations | Number of iterations for each population.                    | 100        |
-| -u       | Rate        | Rate at which the parameters mutate.                         | 1          |
 | -m       | Method      | Method for evaluating the fits.                              | 'integral' |
 | -k       | Keep        | Set to True to save the inference as a plot and a JSON file. | 'False'    |
 | -o       | Outfile     | Override name of output files.                               |            |
 
-The initial number of islands (``-n``) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (``-p``) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (``-r``) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (``g``). The mutation rate (``u``) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (``m``) for measuring the distance between two curves:
+The initial number of islands (``-n``) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (``-p``) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (``-r``) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (``-g``). The mutation rate (``-u``) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (``-m``) for measuring the distance between two curves:
 
 - the least squares on the vectors which doesn't take into account the abscissa (``'least_squares'``).
 - the least squares on the functions which does take into account the abscissa (``'integral'``).
@@ -109,6 +95,7 @@ The other script called ``manual.py`` is for visualizing a model with user-defin
 | -n       | Islands         |
 | -T       | Switch times    |
 | -M       | Migration rates |
+| -C       | Population sizes|
 | -k       | Keep            |
 | -o       | Override        |
 
@@ -118,7 +105,7 @@ The other script called ``manual.py`` is for visualizing a model with user-defin
 - If the algorithm seems to fail you can try to increase the mutation rate. Often is the case this will enable it to find a better area. However a high mutation rate removes precision from the algorithm.
 - *Trying again* isn't a bad idea when using genetic algorithms.
 - The initial population size can be important, the higher it is and the more of the search space will be explored at first.
-The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/Tournament_selection) for choosing which individuals will breed new individuals. You can configure the parameters of the tournament in the ``lib/inference/tournamentOptions.json`` file:
+The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/Tournament_selection) for choosing which individuals will breed new individuals. You can configure the parameters of the tournament and the mutation amplitudes applied to the parameters in the ``lib/inference/genalgOptions.json`` file:
 	- ``"rounds"`` is the number of individuals that will breed new individuals.
 	- ``"roundSize"`` is the size of each tournament.
 	- ``"offspring"`` is the quantity of individuals the chosen individuals will breed.
@@ -131,8 +118,8 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 ### First example - 0 switches
 
 ```sh
-python convert examples/example1.psmc
-python infer.py examples/example1.csv -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m least_squares -k True
+python convert.py examples/example1.psmc
+python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m least_squares -k True
 ```
 
 ![Example 1](examples/example1_0_switch.png)
@@ -140,8 +127,8 @@ python infer.py examples/example1.csv -n 100 -s 0 -p 1000 -r 1 -g 25 -u 1 -m lea
 ### Second example - 3 switches
 
 ```sh
-python convert examples/example2.psmc
-python infer.py examples/example2.csv -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m integral -k True -o examples/example2_3_switch
+python convert.py examples/example2.psmc
+python infer.py examples/example2.csv -n 100 -s 3 -c 100 -p 1000 -r 1 -g 100 -m integral -k True -o examples/example2_3_switch
 ```
 
 ![Example 2](examples/example2_3_switch.png)
@@ -151,8 +138,8 @@ python infer.py examples/example2.csv -n 100 -s 3 -p 1000 -r 1 -g 100 -u 5 -m in
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
 ```sh
-python convert examples/example3.psmc
-python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -k True
+python convert.py examples/example3.psmc
+python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True
 ```
 
 ![Example 3](examples/example3_manual.png)
@@ -187,7 +174,7 @@ Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is 
     │   │   ├─── __init.py__
     │   │   ├─── distance.py
     │   │   ├─── genalg.py
-    │   │   └─── tournamentOptions.json
+    │   │   └─── genalgOptions.json
     │   ├─── __init__.py
     │   ├─── chartOptions.json
     │   ├─── model.py
@@ -211,6 +198,8 @@ The reason why ``lib`` contains the ``ìnference`` folder is if ever there will 
 
 One of the flaws of genetic algorithms is their computational cost. The ``cython`` folder aims at speeding up some of the mathematics done in the ``model.py`` script (for example eigenvalues and diagonalization). For the moment I haven't done much work here (I want to learn how to do good C code) but I will be in the future. If ever you want to add some C code you can use [cprofilev](https://github.com/ymichael/cprofilev) to check what functions are taking the most time. Once you have added code to ``cythonized.pyx`` you can compile it to C code with ``compile.sh`` script, it's as easy as that.
 
+I haven't included the files from the virtual environment as there are too many.
+
 ## Contact
 
 If you have questions about the mathematics please send a mail to <willyrv@gmail.com>.
@@ -220,3 +209,7 @@ If you have questions about the genetic algorithm and/or the code please send a 
 ## License
 
 See the [LICENSE file](LICENSE).
+
+## Issues
+
+Please click on the "Issues" button or use the email adresses, we'll be glad to help.

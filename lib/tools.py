@@ -14,7 +14,7 @@ def psmc_to_csv(filename, mutationRate=2.5e-8, binSize=100):
     path = '/'.join(filename.split('/')[:-1])
     name = filename.split('/')[-1].split('.')[-2]
     data.to_csv('{0}/{1}.csv'.format(path, name), index=False)
-
+    print ('{} has been converted to CSV.'.format(filename))
 
 def search_increase(times, lambdas):
     '''

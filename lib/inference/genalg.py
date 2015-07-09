@@ -4,12 +4,16 @@ from copy import deepcopy
 from lib.inference import distance
 import json
 
-with open('lib/inference/tournamentOptions.json') as tournamentOptions:   
-    tournament = json.load(tournamentOptions)
+# Load the options file
+with open('lib/inference/genalgOptions.json') as genalgOptions:   
+    options = json.load(genalgOptions)
+
+mutations = options['mutations']
+tournament = options['tournament']
 
 class Individual:
 
-    def __init__(self, Model, maxTime, maxIslands, switches):
+    def __init__(self, Model, maxTime, maxIslands, maxSize, switches):
         ''' Generate a model. '''
         # Maximal time allowed
         self.maxTime = maxTime
@@ -20,8 +24,10 @@ class Individual:
                               for _ in range(switches)])
         # Flow rates
         self.M = [rand.uniform(0, 30) for _ in range(switches + 1)]
+        # Population sizes
+        self.C = [rand.uniform(0, maxSize) for _ in range(switches + 1)]
         # Create model
-        self.model = Model(self.n, self.T, self.M)
+        self.model = Model(self.n, self.T, self.M, self.C)
         # Fitness
         self.fitness = None
 
@@ -29,7 +35,7 @@ class Individual:
                  lambdas=None):
         ''' Evaluate how close two curves are. '''
         # Update the model
-        self.model.update(self.n, self.T, self.M)
+        self.model.update(self.n, self.T, self.M, self.C)
         # Compute the fitness according to a chosen distance
         if method == 'integral':
             self.fitness = distance.evaluate_integral(self.model, times,
@@ -39,23 +45,30 @@ class Individual:
                                                            times,
                                                            lambdas)
 
-    def mutate(self, rate):
+    def mutate(self):
         '''
         Randomly mutate islands, times, migrations rates or both. The
         mutation rates can be manually specified here. The general idea
         is that a big mutation rate will make the algorithm converge
         faster whereas a small mutation rate will make it converge
-        better and more precisely.
+        better and more precisely. These rates translate into variances
+        in the following functions because random variables following
+        normal laws are employed, hence the name "variance" and not
+        "rate".
         '''
+        # Choose a parameter at random to mutate
         threshold = rand.random()
-        if threshold < 0.33:
-            self.mutate_T(rate)
-        elif threshold < 0.66:
-            self.mutate_M(rate)
-        elif threshold < 0.88:
-            self.mutate_T_M(rate)
+        if threshold < 0.2:
+            self.mutate_T(mutations['T'])
+        elif threshold < 0.4:
+            self.mutate_M(mutations['M'])
+        elif threshold < 0.6:
+            self.mutate_C(mutations['C'])
+        elif threshold < 0.8:
+            self.mutate_T_M_C(mutations['T'], mutations['M'],
+                              mutations['C'])
         else:
-            self.mutate_n(1)
+            self.mutate_n(mutations['n'])
 
     def mutate_T(self, variance):
         ''' Mutate times. '''
@@ -88,24 +101,46 @@ class Individual:
             m = self.M[i]
             self.M[i] = rand.normalvariate(m, variance)
             # Do it again as long as it is not valid
-            while not 0 < self.M[i]:
+            while not self.M[i] > 0:
                 self.M[i] = rand.normalvariate(m, variance)
 
-    def mutate_T_M(self, variance):
-        ''' Mutate couples (time, rate). Same ideas as before. '''
+    def mutate_C(self, variance):
+        ''' Mutate migration rates. '''
+        # The first time is always 0
+        sampleSize = rand.randint(1, len(self.C))
+        # Choose how many migration rates to mutate
+        sample = rand.sample(range(len(self.C)), sampleSize)
+        # For each migration rate
+        for i in sample:
+            # Mutate it
+            c = self.C[i]
+            self.C[i] = rand.normalvariate(c, variance)
+            # Do it again as long as it is not valid
+            while not self.C[i] > 0:
+                self.C[i] = rand.normalvariate(c, variance)
+
+    def mutate_T_M_C(self, variance_T, variance_M, variance_C):
+        '''
+        Mutate tuples (time, rate, size). The code is the same as
+        for mutate_T and mutate_M, hence the abscence of comments.
+        '''
         if len(self.T) >= 2:
             sampleSize = rand.randint(1, len(self.T)-1)
             sample = rand.sample(range(1, len(self.T)), sampleSize)
             for i in sample:
                 t = self.T[i]
-                self.T[i] = rand.normalvariate(t, variance)
+                self.T[i] = rand.normalvariate(t, variance_T)
                 while not 0 < self.T[i] < self.maxTime:
-                    self.T[i] = rand.normalvariate(t, variance)
+                    self.T[i] = rand.normalvariate(t, variance_T)
                 self.T.sort()
                 m = self.M[i]
-                self.M[i] = rand.normalvariate(m, variance)
+                self.M[i] = rand.normalvariate(m, variance_M)
                 while not self.M[i] > 0:
-                    self.M[i] = rand.normalvariate(m, variance)
+                    self.M[i] = rand.normalvariate(m, variance_M)
+                c = self.C[i]
+                self.C[i] = rand.normalvariate(c, variance_C)
+                while not self.C[i] > 0:
+                    self.C[i] = rand.normalvariate(c, variance_C)
 
     def mutate_n(self, variance):
         ''' Mutate number of islands. '''
@@ -120,7 +155,7 @@ class Individual:
 class Population:
 
     def __init__(self, Model, times, lambdas, maxIslands, switches,
-                 size, repetitions, rate, method='least_squares'):
+                 maxSize, popSize, repetitions, method='integral'):
         ''' List of models for a given number of islands. '''
         # Timeframe to study
         self.times = np.array(times)
@@ -130,14 +165,12 @@ class Population:
         self.integral = distance.integral(self.times, self.lambdas)
         # Number of switches
         self.switches = switches
-        # Mutation rate
-        self.rate = rate
         # Fitness method
         self.method = method
         # Create initial random individuals
         self.individuals = [[Individual(Model, self.times[-1],
-                             maxIslands, self.switches)
-                            for _ in range(size)]
+                             maxIslands, maxSize, self.switches)
+                            for _ in range(popSize)]
                             for _ in range(repetitions)]
         # Evaluate them
         for i in range(repetitions):
@@ -187,7 +220,7 @@ class Population:
                     # Enhance
                     for _ in range(tournament['offsprings']):
                         newIndividual = deepcopy(individual)
-                        newIndividual.mutate(self.rate)
+                        newIndividual.mutate()
                         newIndividuals.append(newIndividual)
                 # Renew to population
                 self.individuals[i] = newIndividuals

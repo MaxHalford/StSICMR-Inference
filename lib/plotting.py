@@ -41,7 +41,6 @@ def plotModel(model, times, lambdas, logScale=False,
         for t in model.T[1:]:
             plt.axvline(t, linestyle=chart['migrations']['style'],
                         color=chart['migrations']['color'],
-                        width=chart['migrations']['width'],
                         alpha=chart['migrations']['alpha'])
     # Set x scale to logarithmic
     if logScale is True:
@@ -56,9 +55,11 @@ def plotModel(model, times, lambdas, logScale=False,
     information = '''
     n: {0}
     T: {1} 
-    M: {2}'''.format(model.n,
+    M: {2}
+    C: {3}'''.format(model.n,
                      np.round(model.T, 2),
-                     np.round(model.M, 2))
+                     np.round(model.M, 2),
+                     np.round(model.C, 2))
     plt.annotate(information, xy=(0, 1), xycoords='axes fraction',
                  fontsize=13, ha='left', va='top', xytext=(5, -5),
                  textcoords='offset points')

@@ -1,0 +1,13 @@
+{
+	"mutations": {
+		"T": 1,
+		"M": 1,
+		"C": 1,
+		"n": 1
+	},
+	"tournament": {
+		"rounds": 20,
+		"roundSize": 10,
+		"offsprings": 5
+	}	
+}

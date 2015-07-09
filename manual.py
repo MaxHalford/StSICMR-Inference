@@ -21,6 +21,9 @@ parser.add_argument('-T', nargs='+', dest='times',
 # Rates
 parser.add_argument('-M', nargs='+', dest='rates',
                     help='Migration rates.', type=float)
+# Sizes
+parser.add_argument('-C', nargs='+', dest='sizes',
+                    help='Population sizes.', type=float)
 # Plot and JSON
 parser.add_argument('-k', action='store', dest='keep', type=str,
                     default='False',
@@ -37,16 +40,17 @@ data.columns = ('times', 'lambdas')
 # Extract the times and the lambdas and remove initial decreases
 times, lambdas = tools.search_increase(list(data['times']),
                                        list(data['lambdas']))
+
 # Normalize the vectors
-l0 = 1 / lambdas[0]
-times = [t * l0 for t in times]
-lambdas = [l * l0 for l in lambdas]
+#l0 = 1 / lambdas[0]
+#times = [t * l0 for t in times]
+#lambdas = [l * l0 for l in lambdas]
 
 # Verify the user input
 assert len(parameters.times) == len(parameters.rates), 'There has to be as many times as rates.'
 
 # Build the model
-m = model.StSICMR(parameters.islands, parameters.times, parameters.rates)
+m = model.StSICMR(parameters.islands, parameters.times, parameters.rates, parameters.sizes)
 
 # Plot
 if parameters.keep == 'True':
@@ -57,8 +61,8 @@ if parameters.keep == 'True':
         fileName = '{0}/{1}_manual'.format(path, file)
     else:
         fileName = parameters.outfile
+    m.save(fileName)
     plotting.plotModel(m, times, lambdas, logScale=True,
                        save='{0}.png'.format(fileName))
-    m.save(fileName)
 else:
     plotting.plotModel(m, times, lambdas, logScale=True)
