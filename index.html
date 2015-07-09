@@ -53,6 +53,7 @@
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#contact">Contact</a></li>
 <li><a href="#license">License</a></li>
+<li><a href="#issues">Issues</a></li>
 </ul>
 
 <h2>
@@ -81,23 +82,12 @@ pip3 install -r requirements.txt</pre></div>
 <h3>
 <a id="2-with-a-virtual-environment" class="anchor" href="#2-with-a-virtual-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. With a virtual environment</h3>
 
-<p>If you want to be safe and not mess with your Python environment you can create a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a> by doing the following steps.</p>
+<p>If you want to be safe and not mess with your Python environment you use a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a> included in the repository.</p>
 
-<p><strong>1. Clone the repository</strong></p>
-
-<div class="highlight highlight-sh"><pre>git clone https://github.com/MaxHalford/StSICMR-Inference
-<span class="pl-c1">cd</span> StSICMR-Inference</pre></div>
-
-<p><strong>2. Create and activate a virtual environment</strong></p>
-
-<div class="highlight highlight-sh"><pre>virtualenv -p /usr/bin/python3 venv
+<div class="highlight highlight-sh"><pre><span class="pl-c1">cd</span> StSICMR-Inference
 <span class="pl-c1">source</span> venv/bin/activate</pre></div>
 
-<p><strong>3. Install requirements</strong></p>
-
-<div class="highlight highlight-sh"><pre>pip3 install -r requirements.txt</pre></div>
-
-<p>This creates a sandboxed Python where you can do as you please without fear of screwing up your setup. The only thing required is to have Python 3.x installed in order to run <code>virtualenv env</code>. To deactivate the virtual environment type <code>deactivate</code>. To activate it type <code>source venv/bin/activate</code>, if you don't the default Python interpreter will be used. You can delete the <code>StSICMR-Inference</code> folder and it will be as if nothing ever happened.</p>
+<p>This uses a sandboxed Python where you can do as you please without fear of screwing up your setup. To deactivate the virtual environment type <code>deactivate</code>. To activate it type <code>source venv/bin/activate</code>, or else the default Python interpreter will be used. You can delete the <code>StSICMR-Inference</code> folder and it will be as if nothing ever happened.</p>
 
 <h3>
 <a id="3-anaconda" class="anchor" href="#3-anaconda" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Anaconda</h3>
@@ -146,8 +136,14 @@ pip3 install -r requirements.txt</pre></div>
 <td>0</td>
 </tr>
 <tr>
-<td>-p</td>
+<td>-c</td>
 <td>Size</td>
+<td>Maximal population size for the first generation.</td>
+<td>100</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>Genalg size</td>
 <td>Initial generation size.</td>
 <td>1000</td>
 </tr>
@@ -162,12 +158,6 @@ pip3 install -r requirements.txt</pre></div>
 <td>Generations</td>
 <td>Number of iterations for each population.</td>
 <td>100</td>
-</tr>
-<tr>
-<td>-u</td>
-<td>Rate</td>
-<td>Rate at which the parameters mutate.</td>
-<td>1</td>
 </tr>
 <tr>
 <td>-m</td>
@@ -190,7 +180,7 @@ pip3 install -r requirements.txt</pre></div>
 </tbody>
 </table>
 
-<p>The initial number of islands (<code>-n</code>) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (<code>-p</code>) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (<code>-r</code>) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (<code>g</code>). The mutation rate (<code>u</code>) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (<code>m</code>) for measuring the distance between two curves:</p>
+<p>The initial number of islands (<code>-n</code>) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (<code>-p</code>) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (<code>-r</code>) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (<code>-g</code>). The mutation rate (<code>-u</code>) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (<code>-m</code>) for measuring the distance between two curves:</p>
 
 <ul>
 <li>the least squares on the vectors which doesn't take into account the abscissa (<code>'least_squares'</code>).</li>
@@ -225,6 +215,10 @@ pip3 install -r requirements.txt</pre></div>
 <td>Migration rates</td>
 </tr>
 <tr>
+<td>-C</td>
+<td>Population sizes</td>
+</tr>
+<tr>
 <td>-k</td>
 <td>Keep</td>
 </tr>
@@ -244,7 +238,7 @@ pip3 install -r requirements.txt</pre></div>
 <li>
 <em>Trying again</em> isn't a bad idea when using genetic algorithms.</li>
 <li>The initial population size can be important, the higher it is and the more of the search space will be explored at first.
-The genetic algorithm uses <a href="https://www.wikiwand.com/en/Tournament_selection">tournament selection</a> for choosing which individuals will breed new individuals. You can configure the parameters of the tournament in the <code>lib/inference/tournamentOptions.json</code> file:
+The genetic algorithm uses <a href="https://www.wikiwand.com/en/Tournament_selection">tournament selection</a> for choosing which individuals will breed new individuals. You can configure the parameters of the tournament and the mutation amplitudes applied to the parameters in the <code>lib/inference/genalgOptions.json</code> file:
 
 <ul>
 <li>
@@ -261,7 +255,33 @@ There are offspring x rounds number of new individuals. The way the tournament w
 <h2>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
 
-<p>Examples are available in the GitHub repository's README.md.</p>
+<p>The following commands use PSMC files provided by <a href="https://github.com/willyrv">Willy Rodriguez</a>.</p>
+
+<h3>
+<a id="first-example---0-switches" class="anchor" href="#first-example---0-switches" aria-hidden="true"><span class="octicon octicon-link"></span></a>First example - 0 switches</h3>
+
+<div class="highlight highlight-sh"><pre>python convert.py examples/example1.psmc
+python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m least_squares -k True</pre></div>
+
+<p><img src="http://i.imgur.com/dAjLVEo.png" alt="First example"></p>
+
+<h3>
+<a id="second-example---3-switches" class="anchor" href="#second-example---3-switches" aria-hidden="true"><span class="octicon octicon-link"></span></a>Second example - 3 switches</h3>
+
+<div class="highlight highlight-sh"><pre>python convert.py examples/example2.psmc
+python infer.py examples/example2.csv -n 100 -s 3 -c 100 -p 1000 -r 1 -g 100 -m integral -k True -o examples/example2_3_switch</pre></div>
+
+<p><img src="http://i.imgur.com/kxyBi7l.png" alt="Second example"></p>
+
+<h3>
+<a id="third-example---manual" class="anchor" href="#third-example---manual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Third example - Manual</h3>
+
+<p>You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always <code>0</code>.</p>
+
+<div class="highlight highlight-sh"><pre>python convert.py examples/example3.psmc
+python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True</pre></div>
+
+<p><img src="http://i.imgur.com/O7kLV5J.png" alt="Third example"></p>
 
 <h2>
 <a id="output" class="anchor" href="#output" aria-hidden="true"><span class="octicon octicon-link"></span></a>Output</h2>
@@ -295,7 +315,7 @@ There are offspring x rounds number of new individuals. The way the tournament w
 │   │   ├─── __init.py__
 │   │   ├─── distance.py
 │   │   ├─── genalg.py
-│   │   └─── tournamentOptions.json
+│   │   └─── genalgOptions.json
 │   ├─── __init__.py
 │   ├─── chartOptions.json
 │   ├─── model.py
@@ -326,6 +346,8 @@ There are offspring x rounds number of new individuals. The way the tournament w
 
 <p>One of the flaws of genetic algorithms is their computational cost. The <code>cython</code> folder aims at speeding up some of the mathematics done in the <code>model.py</code> script (for example eigenvalues and diagonalization). For the moment I haven't done much work here (I want to learn how to do good C code) but I will be in the future. If ever you want to add some C code you can use <a href="https://github.com/ymichael/cprofilev">cprofilev</a> to check what functions are taking the most time. Once you have added code to <code>cythonized.pyx</code> you can compile it to C code with <code>compile.sh</code> script, it's as easy as that.</p>
 
+<p>I haven't included the files from the virtual environment as there are too many.</p>
+
 <h2>
 <a id="contact" class="anchor" href="#contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact</h2>
 
@@ -337,6 +359,11 @@ There are offspring x rounds number of new individuals. The way the tournament w
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>See the <a href="LICENSE">LICENSE file</a>.</p>
+
+<h2>
+<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h2>
+
+<p>Please click on the "Issues" button or use the email adresses, we'll be glad to help.</p>
       </section>
     </div>
 
