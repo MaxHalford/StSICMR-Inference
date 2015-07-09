@@ -66,6 +66,8 @@ The algorithm requires a CSV file. Most of the time these are to be extracted fr
 
 The main script is called ``infer.py`` and guesses the parameters for a given PSMC timeline.
 
+
+<center>
 | Argument | Name        | Description                                                  | Default    |
 |----------|-------------|--------------------------------------------------------------|------------|
 | -v       | Version     | Get the version of the script.                               |            |
@@ -78,6 +80,7 @@ The main script is called ``infer.py`` and guesses the parameters for a given PS
 | -m       | Method      | Method for evaluating the fits.                              | 'integral' |
 | -k       | Keep        | Set to True to save the inference as a plot and a JSON file. | 'False'    |
 | -o       | Outfile     | Override name of output files.                               |            |
+</center>
 
 The initial number of islands (``-n``) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (``-p``) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (``-r``) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (``-g``). The mutation rate (``-u``) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (``-m``) for measuring the distance between two curves:
 
@@ -90,6 +93,7 @@ If the keep argument (``-k``) is set to ``'True'`` then the best model will be s
 
 The other script called ``manual.py`` is for visualizing a model with user-defined parameters.
 
+<center>
 | Argument | Name            |
 |----------|-----------------|
 | -n       | Islands         |
@@ -98,6 +102,7 @@ The other script called ``manual.py`` is for visualizing a model with user-defin
 | -C       | Population sizes|
 | -k       | Keep            |
 | -o       | Override        |
+</center>
 
 ### Taming the genetic algorithm
 
