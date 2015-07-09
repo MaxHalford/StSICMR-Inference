@@ -122,7 +122,7 @@ python convert.py examples/example1.psmc
 python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m least_squares -k True
 ```
 
-![Example 1](examples/example1_0_switch.png)
+![First example](http://i.imgur.com/dAjLVEo.png)
 
 ### Second example - 3 switches
 
@@ -131,7 +131,7 @@ python convert.py examples/example2.psmc
 python infer.py examples/example2.csv -n 100 -s 3 -c 100 -p 1000 -r 1 -g 100 -m integral -k True -o examples/example2_3_switch
 ```
 
-![Example 2](examples/example2_3_switch.png)
+![Second example](http://i.imgur.com/kxyBi7l.png)
 
 ### Third example - Manual
 
@@ -142,7 +142,7 @@ python convert.py examples/example3.psmc
 python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True
 ```
 
-![Example 3](examples/example3_manual.png)
+![Third example](http://i.imgur.com/O7kLV5J.png)
 
 ## Output
 
