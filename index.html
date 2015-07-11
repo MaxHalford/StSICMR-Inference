@@ -31,9 +31,7 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p><img src="http://i.imgur.com/MtvTjvh.png" alt="StSICMR"></p>
-
-<h2>
+        <h2>
 <a id="symmetrical-island-model-with-changes-in-migration-rates---inference" class="anchor" href="#symmetrical-island-model-with-changes-in-migration-rates---inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symmetrical Island Model with Changes in Migration Rates - Inference</h2>
 
 <p>The Symmetrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by <a href="http://fr.viadeo.com/fr/profile/olivier.mazet1">Oliver Mazet</a> and <a href="https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi">Lounès Chikhi</a> with their research team.</p>
@@ -54,6 +52,7 @@
 <li><a href="#contact">Contact</a></li>
 <li><a href="#license">License</a></li>
 <li><a href="#issues">Issues</a></li>
+<li><a href="#updates">Updates</a></li>
 </ul>
 
 <h2>
@@ -138,14 +137,8 @@ pip3 install -r requirements.txt</pre></div>
 <tr>
 <td>-c</td>
 <td>Size</td>
-<td>Maximal population size for the first generation.</td>
-<td>100</td>
-</tr>
-<tr>
-<td>-p</td>
-<td>Genalg size</td>
-<td>Initial generation size.</td>
-<td>1000</td>
+<td>Allow the islands to change size.</td>
+<td>None</td>
 </tr>
 <tr>
 <td>-r</td>
@@ -180,14 +173,14 @@ pip3 install -r requirements.txt</pre></div>
 </tbody>
 </table>
 
-<p>The initial number of islands (<code>-n</code>) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (<code>-p</code>) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (<code>-r</code>) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (<code>-g</code>). The mutation rate (<code>-u</code>) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (<code>-m</code>) for measuring the distance between two curves:</p>
+<p>The initial number of islands (<code>-n</code>) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (<code>-p</code>) is the more of the search space will be covered at first. If you don't want to allow the islands to change sizes then don't include the initial maximal island size argument (<code>-c</code>), if you want to set it to <code>True</code>. For repeating the process you can use the repetitions arguments (<code>-r</code>) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (<code>-g</code>). The mutation rate (<code>-u</code>) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (<code>-m</code>) for measuring the distance between two curves:</p>
 
 <ul>
 <li>the least squares on the vectors which doesn't take into account the abscissa (<code>'least_squares'</code>).</li>
 <li>the least squares on the functions which does take into account the abscissa (<code>'integral'</code>).</li>
 </ul>
 
-<p>If the keep argument (<code>-k</code>) is set to <code>'True'</code> then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (<code>-o</code>) for overriding the name given to the saved files.</p>
+<p>If the keep argument (<code>-k</code>) is set to <code>True</code> then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (<code>-o</code>) for overriding the name given to the saved files.</p>
 
 <h3>
 <a id="manual" class="anchor" href="#manual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manual</h3>
@@ -247,7 +240,8 @@ The genetic algorithm uses <a href="https://www.wikiwand.com/en/Tournament_selec
 <code>"roundSize"</code> is the size of each tournament.</li>
 <li>
 <code>"offspring"</code> is the quantity of individuals the chosen individuals will breed.
-There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random       sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small          tournaments allow weaker individuals to go through (which isn't necessarily a bad thing,                    <a href="http://www.wikiwand.com/en/Simulated_annealing">simulated annealing</a> does the same thing).</li>
+There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random       sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small          tournaments allow weaker individuals to go through (which isn't necessarily a bad thing,                    <a href="http://www.wikiwand.com/en/Simulated_annealing">simulated annealing</a> does the same thing).
+It also has to be said that including the island size parameter (<code>-c</code>) requires the algorithm to run for much more generations because the search space becomes much bigger.</li>
 </ul>
 </li>
 </ul>
@@ -261,7 +255,7 @@ There are offspring x rounds number of new individuals. The way the tournament w
 <a id="first-example---0-switches" class="anchor" href="#first-example---0-switches" aria-hidden="true"><span class="octicon octicon-link"></span></a>First example - 0 switches</h3>
 
 <div class="highlight highlight-sh"><pre>python convert.py examples/example1.psmc
-python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m least_squares -k True</pre></div>
+python infer.py examples/example1.csv -s 0 -g 25 -r 1 -m least_squares -k True</pre></div>
 
 <p><img src="http://i.imgur.com/dAjLVEo.png" alt="First example"></p>
 
@@ -269,19 +263,29 @@ python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m l
 <a id="second-example---3-switches" class="anchor" href="#second-example---3-switches" aria-hidden="true"><span class="octicon octicon-link"></span></a>Second example - 3 switches</h3>
 
 <div class="highlight highlight-sh"><pre>python convert.py examples/example2.psmc
-python infer.py examples/example2.csv -n 100 -s 3 -c 100 -p 1000 -r 1 -g 100 -m integral -k True -o examples/example2_3_switch</pre></div>
+python infer.py examples/example2.csv -s 3 -g 100 -m integral -k True -o examples/example2_3_switch</pre></div>
 
 <p><img src="http://i.imgur.com/kxyBi7l.png" alt="Second example"></p>
 
 <h3>
-<a id="third-example---manual" class="anchor" href="#third-example---manual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Third example - Manual</h3>
+<a id="fourth-example---manual" class="anchor" href="#fourth-example---manual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fourth example - Manual</h3>
 
 <p>You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always <code>0</code>.</p>
 
 <div class="highlight highlight-sh"><pre>python convert.py examples/example3.psmc
-python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True</pre></div>
+python infer.py examples/example3.csv -s 3 -c True -g 100 -m least_squares -k True -o examples/example3_island_size_change</pre></div>
 
-<p><img src="http://i.imgur.com/O7kLV5J.png" alt="Third example"></p>
+<p><img src="http://i.imgur.com/6H4m7IL.png" alt="Third example"></p>
+
+<h3>
+<a id="fourth-example---manual-1" class="anchor" href="#fourth-example---manual-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fourth example - Manual</h3>
+
+<p>You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always <code>0</code>.</p>
+
+<div class="highlight highlight-sh"><pre>python convert.py examples/example4.psmc
+python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True</pre></div>
+
+<p><img src="http://i.imgur.com/O7kLV5J.png" alt="Fourth example"></p>
 
 <h2>
 <a id="output" class="anchor" href="#output" aria-hidden="true"><span class="octicon octicon-link"></span></a>Output</h2>
@@ -320,7 +324,8 @@ python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 │   ├─── chartOptions.json
 │   ├─── model.py
 │   ├─── plotting.py
-│   └─── tools.py
+│   ├─── tools.py
+│   └─── tests.py
 ├─── convert.py
 ├─── infer.py
 ├─── LICENSE
@@ -364,6 +369,31 @@ python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 <a id="issues" class="anchor" href="#issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h2>
 
 <p>Please click on the "Issues" button or use the email adresses, we'll be glad to help.</p>
+
+<h2>
+<a id="updates" class="anchor" href="#updates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updates</h2>
+
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Update</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>June 2015</td>
+<td>Initialization</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>July 2015</td>
+<td>Added the possibility to allow the islands to change size when the migration rates change.</td>
+</tr>
+</tbody>
+</table>
       </section>
     </div>
 
