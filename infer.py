@@ -9,27 +9,20 @@ parser = argparse.ArgumentParser()
 
 # Version
 parser.add_argument('-v', '--version', action='version',
-                    version='%(prog)s 1.0')
+                    version='%(prog)s 1.1')
 # CSV file
 parser.add_argument('file', type=str,
                     help='Pathname of directory to analyze.')
-# Islands
-parser.add_argument('-n', action='store', dest='islands', type=int,
-                    default=100,
-                    help='''Maximal number of islands for the first
-                            generation.''')
 # Switches
 parser.add_argument('-s', action='store', dest='switches', type=int,
                     default=0,
                     help='Number of switches for the model.')
-# Size
-parser.add_argument('-c', action='store', dest='maxsize', type=int,
-                    default=100,
-                    help='Initial generation size.')
-# GA size
-parser.add_argument('-p', action='store', dest='popsize', type=int,
-                    default=1000,
-                    help='Initial generation size.')
+
+# Size change
+parser.add_argument('-c', action='store', dest='sizeChange', type=bool,
+                    default=False,
+                    help='Allow the islands to change size.')
+
 # Repetitions
 parser.add_argument('-r', action='store', dest='repetitions', type=int,
                     default=1,
@@ -43,8 +36,8 @@ parser.add_argument('-m', action='store', dest='method', type=str,
                     default='integral',
                     help='Method for evaluating the fits.')
 # Plot and JSON
-parser.add_argument('-k', action='store', dest='keep', type=str,
-                    default='False',
+parser.add_argument('-k', action='store', dest='keep', type=bool,
+                    default=False,
                     help='''Set to True to save the inference as a plot
                             and a JSON file.''')
 # Outfile
@@ -60,23 +53,22 @@ data.columns = ('times', 'lambdas')
 times, lambdas = tools.search_increase(list(data['times']),
                                        list(data['lambdas']))
 
-# Normalize the vectors
-#l0 = 1 / lambdas[0]
-#times = [t * l0 for t in times]
-#lambdas = [l * l0 for l in lambdas]
+# Normalize the PSMC vectors if changes in islands size is not allowed
+if parameters.sizeChange is False:
+    l0 = 1 / lambdas[0]
+    times = [t * l0 for t in times]
+    lambdas = [l * l0 for l in lambdas]
 
 # Build a genetic algorithm
 pop = genalg.Population(model.StSICMR, times, lambdas,
-                        maxIslands=parameters.islands,
                         switches=parameters.switches,
-                        maxSize=parameters.maxsize,
-                        popSize=parameters.popsize,
+                        sizeChange=parameters.sizeChange,
                         repetitions=parameters.repetitions,
                         method=parameters.method)
 # Enhance them all
 pop.enhance(parameters.generations)
 # Plot the best one
-if parameters.keep == 'True':
+if parameters.keep is True:
     if parameters.outfile is None:
         path = parameters.file.split('/')
         file = path[-1].split('.')[0]

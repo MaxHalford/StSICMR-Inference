@@ -1,4 +1,8 @@
 {
+	"initialGeneration" : {
+		"maxIslands": 100,
+		"popSize": 2000
+	},
 	"mutations": {
 		"T": 1,
 		"M": 1,

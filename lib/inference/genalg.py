@@ -10,22 +10,28 @@ with open('lib/inference/genalgOptions.json') as genalgOptions:
 
 mutations = options['mutations']
 tournament = options['tournament']
+init = options['initialGeneration']
 
 class Individual:
 
-    def __init__(self, Model, maxTime, maxIslands, maxSize, switches):
+    def __init__(self, Model, maxTime, sizeChange, switches):
         ''' Generate a model. '''
+        # Keep the size to know if the island sizes will change or not
+        self.sizeChange = sizeChange
         # Maximal time allowed
         self.maxTime = maxTime
         # Number of islands
-        self.n = np.random.random_integers(2, maxIslands)
+        self.n = np.random.random_integers(2, init['maxIslands'])
         # Times of flow rate changes
         self.T = [0] + sorted([rand.uniform(0, self.maxTime)
                               for _ in range(switches)])
         # Flow rates
         self.M = [rand.uniform(0, 30) for _ in range(switches + 1)]
         # Population sizes
-        self.C = [rand.uniform(0, maxSize) for _ in range(switches + 1)]
+        if sizeChange is True:
+            self.C = [rand.uniform(0, maxSize) for _ in range(switches + 1)]
+        else:
+            self.C = [1 for _ in range(switches + 1)]
         # Create model
         self.model = Model(self.n, self.T, self.M, self.C)
         # Fitness
@@ -65,8 +71,11 @@ class Individual:
         elif threshold < 0.6:
             self.mutate_C(mutations['C'])
         elif threshold < 0.8:
-            self.mutate_T_M_C(mutations['T'], mutations['M'],
-                              mutations['C'])
+            if self.sizeChange is True:
+                self.mutate_T_M_C(mutations['T'], mutations['M'],
+                                  mutations['C'])
+            else:
+                self.mutate_T_M(mutations['T'], mutations['M'])
         else:
             self.mutate_n(mutations['n'])
 
@@ -119,6 +128,25 @@ class Individual:
             while not self.C[i] > 0:
                 self.C[i] = rand.normalvariate(c, variance)
 
+    def mutate_T_M(self, variance_T, variance_M):
+        '''
+        Mutate tuples (time, rate, size). The code is the same as
+        for mutate_T and mutate_M, hence the abscence of comments.
+        '''
+        if len(self.T) >= 2:
+            sampleSize = rand.randint(1, len(self.T)-1)
+            sample = rand.sample(range(1, len(self.T)), sampleSize)
+            for i in sample:
+                t = self.T[i]
+                self.T[i] = rand.normalvariate(t, variance_T)
+                while not 0 < self.T[i] < self.maxTime:
+                    self.T[i] = rand.normalvariate(t, variance_T)
+                self.T.sort()
+                m = self.M[i]
+                self.M[i] = rand.normalvariate(m, variance_M)
+                while not self.M[i] > 0:
+                    self.M[i] = rand.normalvariate(m, variance_M)
+
     def mutate_T_M_C(self, variance_T, variance_M, variance_C):
         '''
         Mutate tuples (time, rate, size). The code is the same as
@@ -154,8 +182,8 @@ class Individual:
 
 class Population:
 
-    def __init__(self, Model, times, lambdas, maxIslands, switches,
-                 maxSize, popSize, repetitions, method='integral'):
+    def __init__(self, Model, times, lambdas, switches, sizeChange,
+                 repetitions, method='integral'):
         ''' List of models for a given number of islands. '''
         # Timeframe to study
         self.times = np.array(times)
@@ -169,8 +197,8 @@ class Population:
         self.method = method
         # Create initial random individuals
         self.individuals = [[Individual(Model, self.times[-1],
-                             maxIslands, maxSize, self.switches)
-                            for _ in range(popSize)]
+                             sizeChange, self.switches)
+                            for _ in range(init['popSize'])]
                             for _ in range(repetitions)]
         # Evaluate them
         for i in range(repetitions):

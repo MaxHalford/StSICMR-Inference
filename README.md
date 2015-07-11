@@ -1,5 +1,3 @@
-![StSICMR](http://i.imgur.com/MtvTjvh.png)
-
 ## Symmetrical Island Model with Changes in Migration Rates - Inference
 
 The Symmetrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by [Oliver Mazet](http://fr.viadeo.com/fr/profile/olivier.mazet1) and [Lounès Chikhi](https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi) with their research team.
@@ -18,6 +16,7 @@ The method tries to fit the model to a PSMC timeline produced with [Heng Li's al
 - [Contact](#contact)
 - [License](#license)
 - [Issues](#issues)
+- [Updates](#updates)
 
 ## Setup
 
@@ -71,20 +70,19 @@ The main script is called ``infer.py`` and guesses the parameters for a given PS
 | -v       | Version     | Get the version of the script.                               |            |
 | -n       | Islands     | Maximal number of islands for the first generation.          | 100        |
 | -s       | Switches    | Number of switches for the model.                            | 0          |
-| -c       | Size        | Maximal population size for the first generation.            | 100        |
-| -p       | Genalg size | Initial generation size.                                     | 1000       |
+| -c       | Size        | Allow the islands to change size.                            | None       |
 | -r       | Repetitions | Number of times to repeat the process.                       | 1          |
 | -g       | Generations | Number of iterations for each population.                    | 100        |
 | -m       | Method      | Method for evaluating the fits.                              | 'integral' |
 | -k       | Keep        | Set to True to save the inference as a plot and a JSON file. | 'False'    |
 | -o       | Outfile     | Override name of output files.                               |            |
 
-The initial number of islands (``-n``) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (``-p``) is the more of the search space will be covered at first. For repeating the process you can use the repetitions arguments (``-r``) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (``-g``). The mutation rate (``-u``) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (``-m``) for measuring the distance between two curves:
+The initial number of islands (``-n``) is not important as the algorithm usually finds the right number of islands straight away. The higher the initial population size (``-p``) is the more of the search space will be covered at first. If you don't want to allow the islands to change sizes then don't include the initial maximal island size argument (``-c``), if you want to set it to ``True``. For repeating the process you can use the repetitions arguments (``-r``) and the best model will be saved. The genetic algorithm implementation stops after a fixed number of generations (``-g``). The mutation rate (``-u``) is important; if it is high the algorithm will not get stuck, at the cost of precision. There are two methods (``-m``) for measuring the distance between two curves:
 
 - the least squares on the vectors which doesn't take into account the abscissa (``'least_squares'``).
 - the least squares on the functions which does take into account the abscissa (``'integral'``).
 
-If the keep argument (``-k``) is set to ``'True'`` then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (``-o``) for overriding the name given to the saved files.
+If the keep argument (``-k``) is set to ``True`` then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (``-o``) for overriding the name given to the saved files.
 
 ### Manual
 
@@ -110,6 +108,7 @@ The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/To
 	- ``"roundSize"`` is the size of each tournament.
 	- ``"offspring"`` is the quantity of individuals the chosen individuals will breed.
 	There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random 		sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small 			tournaments allow weaker individuals to go through (which isn't necessarily a bad thing, 					[simulated annealing](http://www.wikiwand.com/en/Simulated_annealing) does the same thing).
+It also has to be said that including the island size parameter (``-c``) requires the algorithm to run for much more generations because the search space becomes much bigger.
 
 ## Examples
 
@@ -119,7 +118,7 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 
 ```sh
 python convert.py examples/example1.psmc
-python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m least_squares -k True
+python infer.py examples/example1.csv -s 0 -g 25 -r 1 -m least_squares -k True
 ```
 
 ![First example](http://i.imgur.com/dAjLVEo.png)
@@ -128,21 +127,32 @@ python infer.py examples/example1.csv -n 100 -s 0 -c 100 -p 1000 -r 1 -g 25 -m l
 
 ```sh
 python convert.py examples/example2.psmc
-python infer.py examples/example2.csv -n 100 -s 3 -c 100 -p 1000 -r 1 -g 100 -m integral -k True -o examples/example2_3_switch
+python infer.py examples/example2.csv -s 3 -g 100 -m integral -k True -o examples/example2_3_switch
 ```
 
 ![Second example](http://i.imgur.com/kxyBi7l.png)
 
-### Third example - Manual
+### Fourth example - Manual
 
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
 ```sh
 python convert.py examples/example3.psmc
-python manual.py examples/example3.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True
+python infer.py examples/example3.csv -s 3 -c True -g 100 -m least_squares -k True -o examples/example3_island_size_change
 ```
 
-![Third example](http://i.imgur.com/O7kLV5J.png)
+![Third example](http://i.imgur.com/6H4m7IL.png)
+
+### Fourth example - Manual
+
+You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
+
+```sh
+python convert.py examples/example4.psmc
+python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True
+```
+
+![Fourth example](http://i.imgur.com/O7kLV5J.png)
 
 ## Output
 
@@ -179,7 +189,8 @@ Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is 
     │   ├─── chartOptions.json
     │   ├─── model.py
     │   ├─── plotting.py
-    │   └─── tools.py
+    │   ├─── tools.py
+    │   └─── tests.py
     ├─── convert.py
     ├─── infer.py
     ├─── LICENSE
@@ -213,3 +224,10 @@ See the [LICENSE file](LICENSE).
 ## Issues
 
 Please click on the "Issues" button or use the email adresses, we'll be glad to help.
+
+## Updates
+
+| Version | Date      | Update                                                                                     |
+|---------|-----------|--------------------------------------------------------------------------------------------|
+| 1.0     | June 2015 | Initialization                                                                             |
+| 1.1     | July 2015 | Added the possibility to allow the islands to change size when the migration rates change. |
