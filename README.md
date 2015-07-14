@@ -45,8 +45,10 @@ If you don't have ``pip`` installed then you can install the modules manually, t
 If you want to be safe and not mess with your Python environment you use a [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/) included in the repository.
 
 ```sh
-cd StSICMR-Inference
+pip3 install virtualenv
+virtualenv venv
 source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 This uses a sandboxed Python where you can do as you please without fear of screwing up your setup. To deactivate the virtual environment type ``deactivate``. To activate it type ``source venv/bin/activate``, or else the default Python interpreter will be used. You can delete the ``StSICMR-Inference`` folder and it will be as if nothing ever happened.
