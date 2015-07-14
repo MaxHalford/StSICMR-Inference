@@ -76,8 +76,8 @@ if parameters.keep is True:
         fileName = '{0}/{1}_{2}_switch'.format(path, file, parameters.switches)
     else:
         fileName = parameters.outfile
-    pop.best.model.save(fileName)
-    plotting.plotModel(pop.best.model, times, lambdas, logScale=True,
+    pop.overallBest.model.save(fileName)
+    plotting.plotModel(pop.overallBest.model, times, lambdas, logScale=True,
                        save='{0}.png'.format(fileName))
 else:
-    plotting.plotModel(pop.best.model, times, lambdas, logScale=True)
+    plotting.plotModel(pop.overallBest.model, times, lambdas, logScale=True)

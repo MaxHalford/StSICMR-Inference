@@ -1,6 +1,7 @@
 {
 	"initialGeneration" : {
 		"maxIslands": 100,
+		"maxSize": 30,
 		"popSize": 2000
 	},
 	"mutations": {

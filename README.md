@@ -72,7 +72,7 @@ The main script is called ``infer.py`` and guesses the parameters for a given PS
 | -v       | Version     | Get the version of the script.                               |            |
 | -n       | Islands     | Maximal number of islands for the first generation.          | 100        |
 | -s       | Switches    | Number of switches for the model.                            | 0          |
-| -c       | Size        | Allow the islands to change size.                            | None       |
+| -c       | Size        | Allow the islands to change size.                            | False      |
 | -r       | Repetitions | Number of times to repeat the process.                       | 1          |
 | -g       | Generations | Number of iterations for each population.                    | 100        |
 | -m       | Method      | Method for evaluating the fits.                              | 'integral' |
@@ -85,6 +85,8 @@ The initial number of islands (``-n``) is not important as the algorithm usually
 - the least squares on the functions which does take into account the abscissa (``'integral'``).
 
 If the keep argument (``-k``) is set to ``True`` then the best model will be saved as a PNG file for the chart and a JSON file for the parameters with default names. You can also use the outfile argument (``-o``) for overriding the name given to the saved files.
+
+At every repetition the console will prompt you if you desire to continue (``y``) or to go to the next repetition (``n``). If you do then it will ask you for how many generations you wish to continue.
 
 ### Manual
 
@@ -104,13 +106,14 @@ The other script called ``manual.py`` is for visualizing a model with user-defin
 - Increasing the generation size can have an impact, the longer the algorithm runs the lower the chance that the algorithm won't improve the model.
 - If the algorithm seems to fail you can try to increase the mutation rate. Often is the case this will enable it to find a better area. However a high mutation rate removes precision from the algorithm.
 - *Trying again* isn't a bad idea when using genetic algorithms.
-- The initial population size can be important, the higher it is and the more of the search space will be explored at first.
-The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/Tournament_selection) for choosing which individuals will breed new individuals. You can configure the parameters of the tournament and the mutation amplitudes applied to the parameters in the ``lib/inference/genalgOptions.json`` file:
+- The initial population size can be important, the higher it is and the more of the search space will be explored at first
+- The genetic algorithm uses [tournament selection](https://www.wikiwand.com/en/Tournament_selection) for choosing which individuals will breed new individuals. You can configure the parameters of the tournament and the mutation amplitudes applied to the parameters in the ``lib/inference/genalgOptions.json`` file:
 	- ``"rounds"`` is the number of individuals that will breed new individuals.
 	- ``"roundSize"`` is the size of each tournament.
 	- ``"offspring"`` is the quantity of individuals the chosen individuals will breed.
 	There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random 		sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small 			tournaments allow weaker individuals to go through (which isn't necessarily a bad thing, 					[simulated annealing](http://www.wikiwand.com/en/Simulated_annealing) does the same thing).
-It also has to be said that including the island size parameter (``-c``) requires the algorithm to run for much more generations because the search space becomes much bigger.
+- It also has to be said that including the island size parameter (``-c``) requires the algorithm to run for much more generations because the search space becomes much bigger.
+- If you think you have a better way of measuring the distance between two curves you can add it to the ``distance.py`` script and modify the ``evaluate()`` procedure in the ``genalg.py`` script.
 
 ## Examples
 

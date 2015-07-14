@@ -29,7 +29,8 @@ class Individual:
         self.M = [rand.uniform(0, 30) for _ in range(switches + 1)]
         # Population sizes
         if sizeChange is True:
-            self.C = [rand.uniform(0, maxSize) for _ in range(switches + 1)]
+            self.C = [rand.uniform(0, init['maxSize'])
+                      for _ in range(switches + 1)]
         else:
             self.C = [1 for _ in range(switches + 1)]
         # Create model
@@ -194,6 +195,7 @@ class Population:
     def __init__(self, Model, times, lambdas, switches, sizeChange,
                  repetitions, method='integral'):
         ''' List of models for a given number of islands. '''
+        print ("Don't worry, I'm generating the initial population...")
         # Timeframe to study
         self.times = np.array(times)
         # PSMC distribution to fit
@@ -212,9 +214,15 @@ class Population:
         # Evaluate them
         for i in range(repetitions):
             self.evaluate(i)
-        # Store the best model
-        self.best = np.random.choice(self.individuals[0])
-        self.best.fitness = np.inf
+        # Repetition bests
+        self.repBest = []
+        for repetition in range(repetitions):
+            individual = np.random.choice(self.individuals[repetition])
+            individual.fitness = np.inf
+            self.repBest.append(individual)
+        # Overall best
+        self.overallBest = np.random.choice(self.individuals[0])
+        self.overallBest.fitness = np.inf
 
     def sort(self, index):
         ''' Sort in ascending order (smallest to highest fitness). '''
@@ -246,12 +254,13 @@ class Population:
 
     def enhance(self, generations):
         ''' Mutate the population. '''
-        for i in range(len(self.individuals)):
+        for repetition in range(len(self.individuals)):
+            print ('###### Repetition {} ######'.format(repetition+1))
             for g in range(generations):
                 newIndividuals = []
                 for individual in self.tournament(tournament['rounds'],
                                                   tournament['roundSize'],
-                                                  i):
+                                                  repetition):
                     # Create a copy of the individual
                     newIndividuals.append(deepcopy(individual))
                     # Enhance
@@ -260,11 +269,51 @@ class Population:
                         newIndividual.mutate()
                         newIndividuals.append(newIndividual)
                 # Renew to population
-                self.individuals[i] = newIndividuals
+                self.individuals[repetition] = newIndividuals
                 # Reevaluate the new models
-                self.evaluate(i)
+                self.evaluate(repetition)
                 # Check if there is a new best individual
-                if self.individuals[i][0].fitness < self.best.fitness:
-                    self.best = deepcopy(self.individuals[i][0])
-                print ('Repetition {0} - Generation {1} - Best {2}'.format(i+1,
-                       g+1, self.best.fitness))
+                if self.individuals[repetition][0].fitness < self.repBest[repetition].fitness:
+                    self.repBest[repetition] = deepcopy(self.individuals[repetition][0])
+                if self.individuals[repetition][0].fitness < self.overallBest.fitness:
+                    self.overallBest = deepcopy(self.individuals[repetition][0])
+                print ('Rep {0} - Gen {1} - Rep Best {2} - Overall Best {3}'.format(repetition+1,
+                       g+1, self.repBest[repetition].fitness, self.overallBest.fitness))
+            # Ask the user if he wants to continue
+            keepGoing = input('Shall I keep enhancing this repetition? (y/n) ')
+            while keepGoing not in ('y', 'Y', 'n', 'N'):
+                keepGoing = input('Shall I keep enhancing this repetition? (y/n) ')
+            if keepGoing in ('n', 'N'):
+                pass
+            # If he does the user has to say for how many generations (positive integer)
+            else:
+                value = input('For how many generations? (int) ')
+                newGenerations = -1
+                while newGenerations < 0:
+                    try:
+                       newGenerations = int(value)
+                    except ValueError:
+                       value = input('Please insert a positive integer: ')
+                for g in range(generations, generations+newGenerations):
+                    newIndividuals = []
+                    for individual in self.tournament(tournament['rounds'],
+                                                      tournament['roundSize'],
+                                                      repetition):
+                        # Create a copy of the individual
+                        newIndividuals.append(deepcopy(individual))
+                        # Enhance
+                        for _ in range(tournament['offsprings']):
+                            newIndividual = deepcopy(individual)
+                            newIndividual.mutate()
+                            newIndividuals.append(newIndividual)
+                    # Renew to population
+                    self.individuals[repetition] = newIndividuals
+                    # Reevaluate the new models
+                    self.evaluate(repetition)
+                    # Check if there is a new best individual
+                    if self.individuals[repetition][0].fitness < self.repBest[repetition].fitness:
+                        self.repBest[repetition] = deepcopy(self.individuals[repetition][0])
+                    if self.individuals[repetition][0].fitness < self.overallBest.fitness:
+                        self.overallBest = deepcopy(self.individuals[repetition][0])
+                    print ('Rep {0} - Gen {1} - Rep Best {2} - Overall Best {3}'.format(repetition+1,
+                           g+1, self.repBest[repetition].fitness, self.overallBest.fitness))
