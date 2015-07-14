@@ -4,6 +4,12 @@ from copy import deepcopy
 from lib.inference import distance
 import json
 
+# Python 2 fix
+try:
+    input = raw_input
+except NameError:
+    pass
+
 # Load the options file
 with open('lib/inference/genalgOptions.json') as genalgOptions:   
     options = json.load(genalgOptions)
