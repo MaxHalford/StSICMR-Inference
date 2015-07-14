@@ -64,20 +64,29 @@ class Individual:
         '''
         # Choose a parameter at random to mutate
         threshold = rand.random()
-        if threshold < 0.2:
-            self.mutate_T(mutations['T'])
-        elif threshold < 0.4:
-            self.mutate_M(mutations['M'])
-        elif threshold < 0.6:
-            self.mutate_C(mutations['C'])
-        elif threshold < 0.8:
-            if self.sizeChange is True:
+        # Mutation possibilities if size changes are allowed
+        if self.sizeChange is True:
+            if threshold < 0.2:
+                self.mutate_T(mutations['T'])
+            elif threshold < 0.4:
+                self.mutate_M(mutations['M'])
+            elif threshold < 0.6:
+                self.mutate_C(mutations['C'])
+            elif threshold < 0.8:
                 self.mutate_T_M_C(mutations['T'], mutations['M'],
                                   mutations['C'])
             else:
-                self.mutate_T_M(mutations['T'], mutations['M'])
+                self.mutate_n(mutations['n'])
+        # Mutations cases if size changes are not allowed
         else:
-            self.mutate_n(mutations['n'])
+            if threshold < 0.25:
+                self.mutate_T(mutations['T'])
+            elif threshold < 0.5:
+                self.mutate_M(mutations['M'])
+            elif threshold < 0.75:
+                self.mutate_T_M(mutations['T'], mutations['M'])
+            else:
+                self.mutate_n(mutations['n'])
 
     def mutate_T(self, variance):
         ''' Mutate times. '''
