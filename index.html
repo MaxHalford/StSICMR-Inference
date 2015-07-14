@@ -1,36 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="StSICMR-Inference : ">
+    <title>StSICMR-Inference by MaxHalford</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <title>StSICMR-Inference</title>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/MaxHalford/StSICMR-Inference">View on GitHub</a>
-
-          <h1 id="project_title">StSICMR-Inference</h1>
-          <h2 id="project_tagline"></h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/MaxHalford/StSICMR-Inference/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/MaxHalford/StSICMR-Inference/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+    <div class="wrapper">
+      <header class="without-description">
+        <h1>StSICMR-Inference</h1>
+        <p></p>
+        <p class="view"><a href="https://github.com/MaxHalford/StSICMR-Inference">View the Project on GitHub <small>MaxHalford/StSICMR-Inference</small></a></p>
+        <ul>
+          <li><a href="https://github.com/MaxHalford/StSICMR-Inference/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/MaxHalford/StSICMR-Inference/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/MaxHalford/StSICMR-Inference">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h2>
 <a id="symmetrical-island-model-with-changes-in-migration-rates---inference" class="anchor" href="#symmetrical-island-model-with-changes-in-migration-rates---inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symmetrical Island Model with Changes in Migration Rates - Inference</h2>
 
@@ -83,8 +79,10 @@ pip3 install -r requirements.txt</pre></div>
 
 <p>If you want to be safe and not mess with your Python environment you use a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a> included in the repository.</p>
 
-<div class="highlight highlight-sh"><pre><span class="pl-c1">cd</span> StSICMR-Inference
-<span class="pl-c1">source</span> venv/bin/activate</pre></div>
+<div class="highlight highlight-sh"><pre>pip3 install virtualenv
+virtualenv venv
+<span class="pl-c1">source</span> venv/bin/activate
+pip install -r requirements.txt</pre></div>
 
 <p>This uses a sandboxed Python where you can do as you please without fear of screwing up your setup. To deactivate the virtual environment type <code>deactivate</code>. To activate it type <code>source venv/bin/activate</code>, or else the default Python interpreter will be used. You can delete the <code>StSICMR-Inference</code> folder and it will be as if nothing ever happened.</p>
 
@@ -385,7 +383,7 @@ python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 <tr>
 <td>1.0</td>
 <td>June 2015</td>
-<td>Initialization</td>
+<td>Initialization.</td>
 </tr>
 <tr>
 <td>1.1</td>
@@ -396,16 +394,11 @@ python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 </table>
       </section>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">StSICMR-Inference maintained by <a href="https://github.com/MaxHalford">MaxHalford</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
+    <footer>
+      <p>Project maintained by <a href="https://github.com/MaxHalford">MaxHalford</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>
