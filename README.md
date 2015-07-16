@@ -94,6 +94,7 @@ The other script called ``manual.py`` is for visualizing a model with user-defin
 
 | Argument | Name            |
 |----------|-----------------|
+| -l       | Normalization   |
 | -n       | Islands         |
 | -T       | Switch times    |
 | -M       | Migration rates |
@@ -137,7 +138,7 @@ python infer.py examples/example2.csv -s 3 -g 100 -m integral -k True -o example
 
 ![Second example](http://i.imgur.com/kxyBi7l.png)
 
-### Fourth example - Manual
+### Fourth example - Islands can change size
 
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 

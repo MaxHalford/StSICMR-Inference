@@ -8,10 +8,14 @@ parser = argparse.ArgumentParser()
 
 # Version
 parser.add_argument('-v', '--version', action='version',
-                    version='%(prog)s 1.0')
+                    version='%(prog)s 1.1')
 # PSMC file
 parser.add_argument('file', type=str,
                       help='Pathname of directory to analyze.')
+# Normalization
+parser.add_argument('-l', action='store', dest='normalize', type=bool,
+                    help='Normalize the PSMC data so that the first lambda is 1.')
+
 # Islands
 parser.add_argument('-n', action='store',
                     dest='islands', type=int, help='Number of islands.')
@@ -25,8 +29,8 @@ parser.add_argument('-M', nargs='+', dest='rates',
 parser.add_argument('-C', nargs='+', dest='sizes',
                     help='Population sizes.', type=float)
 # Plot and JSON
-parser.add_argument('-k', action='store', dest='keep', type=str,
-                    default='False',
+parser.add_argument('-k', action='store', dest='keep', type=bool,
+                    default=False,
                     help="""Set to True to save the fit as a plot and a
                             JSON file.""")
 # Outfile
@@ -41,19 +45,20 @@ data.columns = ('times', 'lambdas')
 times, lambdas = tools.search_increase(list(data['times']),
                                        list(data['lambdas']))
 
-# Normalize the vectors
-#l0 = 1 / lambdas[0]
-#times = [t * l0 for t in times]
-#lambdas = [l * l0 for l in lambdas]
-
 # Verify the user input
-assert len(parameters.times) == len(parameters.rates), 'There has to be as many times as rates.'
+assert len(parameters.times) == len(parameters.rates), 'There has to be as many times as there are rates.'
+
+# Normalize the vectors
+if parameters.normalize is True:   
+    l0 = 1 / lambdas[0]
+    times = [t * l0 for t in times]
+    lambdas = [l * l0 for l in lambdas]
 
 # Build the model
 m = model.StSICMR(parameters.islands, parameters.times, parameters.rates, parameters.sizes)
 
 # Plot
-if parameters.keep == 'True':
+if parameters.keep is True:
     if parameters.outfile is None:
         path = parameters.file.split('/')
         file = path[-1].split('.')[0]
