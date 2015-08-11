@@ -1,33 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>StSICMR-Inference by MaxHalford</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-    <div class="wrapper">
-      <header class="without-description">
-        <h1>StSICMR-Inference</h1>
-        <p></p>
-        <p class="view"><a href="https://github.com/MaxHalford/StSICMR-Inference">View the Project on GitHub <small>MaxHalford/StSICMR-Inference</small></a></p>
-        <ul>
-          <li><a href="https://github.com/MaxHalford/StSICMR-Inference/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/MaxHalford/StSICMR-Inference/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/MaxHalford/StSICMR-Inference">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h2>
+    <section class="page-header">
+      <h1 class="project-name">StSICMR-Inference</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/MaxHalford/StSICMR-Inference" class="btn">View on GitHub</a>
+      <a href="https://github.com/MaxHalford/StSICMR-Inference/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/MaxHalford/StSICMR-Inference/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
 <a id="symmetrical-island-model-with-changes-in-migration-rates---inference" class="anchor" href="#symmetrical-island-model-with-changes-in-migration-rates---inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symmetrical Island Model with Changes in Migration Rates - Inference</h2>
 
 <p>The Symmetrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by <a href="http://fr.viadeo.com/fr/profile/olivier.mazet1">Oliver Mazet</a> and <a href="https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi">Lounès Chikhi</a> with their research team.</p>
@@ -273,7 +265,7 @@ python infer.py examples/example2.csv -s 3 -g 100 -m integral -k True -o example
 <p><img src="http://i.imgur.com/kxyBi7l.png" alt="Second example"></p>
 
 <h3>
-<a id="fourth-example---islands-can-change-size" class="anchor" href="#fourth-example---islands-can-change-size" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fourth example - Islands can change size</h3>
+<a id="third-example---islands-can-change-size" class="anchor" href="#third-example---islands-can-change-size" aria-hidden="true"><span class="octicon octicon-link"></span></a>Third example - Islands can change size</h3>
 
 <p>You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always <code>0</code>.</p>
 
@@ -302,26 +294,10 @@ python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 
 <pre><code>StSICMR-Inference
 ├───┐ examples
-│   ├─── example1.csv
-│   ├─── example1.psmc
-│   ├─── example1_0_switch.json
-│   ├─── example1_0_switch.png
-│   ├─── example2.csv
-│   ├─── example2.psmc
-│   ├─── example2_3_switch.json
-│   ├─── example2_3_switch.png
-│   ├─── example3.csv
-│   ├─── example3.psmc
-│   ├─── example3_manual.json
-│   └─── example3_manual.png
+│   └─── ...
 ├───┐ lib
-│   ├───┐ cython
-│   │   ├─── compile.sh
-│   │   ├─── cythonized.c
-│   │   ├─── cythonized.pyx
-│   │   └─── setup.py
 │   ├───┐ inference
-│   │   ├─── __init.py__
+│   │   ├─── __init__.py
 │   │   ├─── distance.py
 │   │   ├─── genalg.py
 │   │   └─── genalgOptions.json
@@ -329,14 +305,14 @@ python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 │   ├─── chartOptions.json
 │   ├─── model.py
 │   ├─── plotting.py
-│   ├─── tools.py
-│   └─── tests.py
+│   └─── tools.py
 ├─── convert.py
 ├─── infer.py
 ├─── LICENSE
 ├─── manual.py
 ├─── README.md
-└─── requirements.txt
+├─── requirements.txt
+└─── utests.py
 </code></pre>
 
 <p>The two main scripts (<code>infer.py</code> and <code>manual.py</code>) are in the top-level of the directory. In the <code>lib</code> folder is where the heavy-lifting is being done:</p>
@@ -399,13 +375,15 @@ python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -
 </tr>
 </tbody>
 </table>
-      </section>
-    </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/MaxHalford">MaxHalford</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/MaxHalford/StSICMR-Inference">StSICMR-Inference</a> is maintained by <a href="https://github.com/MaxHalford">MaxHalford</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
   </body>
 </html>
