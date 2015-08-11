@@ -8,7 +8,7 @@ with open('lib/chartOptions.json') as chartOptions:
 if chart['style'] != 'None':
     plt.style.use(chart['style'])
 
-def plotModel(model, times, lambdas, logScale=False,
+def plotModel(model, times, lambdas=None, logScale=False,
               save=None, show=True):
     ''' Plot a target and an inference. '''
     plt.clf()
@@ -17,15 +17,16 @@ def plotModel(model, times, lambdas, logScale=False,
     # Evaluate the model at the given time steps
     lambda_s = [model.lambda_s(t) for t in times]
     # Plot the target
-    target = chart['target']
-    if target['style'] == 'step': 
-        plt.step(times, lambdas, label=target['label'],
-                 linewidth=target['width'], color=target['color'],
-                 alpha=target['alpha'], where='post')
-    elif target['style'] == 'smooth':
-        plt.plot(times, lambdas, label=target['label'],
-                linewidth=target['width'], color=target['color'],
-                alpha=target['alpha'])
+    if lambdas is not None:
+        target = chart['target']
+        if target['style'] == 'step': 
+            plt.step(times, lambdas, label=target['label'],
+                     linewidth=target['width'], color=target['color'],
+                     alpha=target['alpha'], where='post')
+        elif target['style'] == 'smooth':
+            plt.plot(times, lambdas, label=target['label'],
+                    linewidth=target['width'], color=target['color'],
+                    alpha=target['alpha'])
     # Plot the inference
     inference = chart['inference']
     if inference['style'] == 'step': 

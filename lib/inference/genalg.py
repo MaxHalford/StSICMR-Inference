@@ -4,7 +4,8 @@ from copy import deepcopy
 from lib.inference import distance
 import json
 from time import sleep
-from threading import Thread
+from threading import Timer
+from lib.tools import input_with_timeout
 
 # Python 2 fix
 try:
@@ -260,7 +261,7 @@ class Population:
             newIndividuals.append(participants[0])
         return newIndividuals
 
-    def enhance(self, generations):
+    def enhance(self, generations, repeat=True):
         ''' Mutate the population. '''
         for repetition in range(len(self.individuals)):
             print ('###### Repetition {} ######'.format(repetition+1))
@@ -288,45 +289,56 @@ class Population:
                 print ('Rep {0} - Gen {1} - Rep Best {2} - Overall Best {3}'.format(repetition+1,
                        g+1, self.repBest[repetition].fitness, self.overallBest.fitness))
             # Ask the user if he wants to continue
-            keepGoing = 'y'
-            while keepGoing in ('y', 'Y'):
-                keepGoing = None
-                keepGoing = input('Shall I keep enhancing this repetition? (y/n) ')
-                while keepGoing not in ('y', 'Y', 'n', 'N'):
-                    keepGoing = None
-                    keepGoing = input('Shall I keep enhancing this repetition? (y/n) ')
-                if keepGoing in ('n', 'N'):
-                    pass
-                # If he does the user has to say for how many generations (positive integer)
-                else:
-                    value = input('For how many generations? (int) ')
-                    newGenerations = -1
-                    while newGenerations < 0:
+            if repeat is True:
+                keepGoing = 'y'
+                while keepGoing in ('y', 'Y'):
+                    try:
+                        answer = input_with_timeout('Shall I keep enhancing this repetition? (y/n) ', 10)
+                    except IOError:
+                        print ('n')
+                        keepGoing = 'n'
+                    else:
+                        keepGoing = answer
+                    while keepGoing not in ('y', 'Y', 'n', 'N'):
                         try:
-                           newGenerations = int(value)
-                        except ValueError:
-                           value = input('Please insert a positive integer: ')
-                    for g in range(generations, generations+newGenerations):
-                        generations += 1
-                        newIndividuals = []
-                        for individual in self.tournament(tournament['rounds'],
-                                                          tournament['roundSize'],
-                                                          repetition):
-                            # Create a copy of the individual
-                            newIndividuals.append(deepcopy(individual))
-                            # Enhance
-                            for _ in range(tournament['offsprings']):
-                                newIndividual = deepcopy(individual)
-                                newIndividual.mutate()
-                                newIndividuals.append(newIndividual)
-                        # Renew to population
-                        self.individuals[repetition] = newIndividuals
-                        # Reevaluate the new models
-                        self.evaluate(repetition)
-                        # Check if there is a new best individual
-                        if self.individuals[repetition][0].fitness < self.repBest[repetition].fitness:
-                            self.repBest[repetition] = deepcopy(self.individuals[repetition][0])
-                        if self.individuals[repetition][0].fitness < self.overallBest.fitness:
-                            self.overallBest = deepcopy(self.individuals[repetition][0])
-                        print ('Rep {0} - Gen {1} - Rep Best {2} - Overall Best {3}'.format(repetition+1,
-                               g+1, self.repBest[repetition].fitness, self.overallBest.fitness))
+                            answer = input_with_timeout('Shall I keep enhancing this repetition? (y/n) ', 10)
+                        except IOError:
+                            print ('n')
+                            keepGoing = 'n'
+                        else:
+                            keepGoing = answer
+                    if keepGoing in ('n', 'N'):
+                        pass
+                    # If he does the user has to say for how many generations (positive integer)
+                    else:
+                        value = input('For how many generations? (int) ')
+                        newGenerations = -1
+                        while newGenerations < 0:
+                            try:
+                               newGenerations = int(value)
+                            except ValueError:
+                               value = input('Please insert a positive integer: ')
+                        for g in range(generations, generations+newGenerations):
+                            generations += 1
+                            newIndividuals = []
+                            for individual in self.tournament(tournament['rounds'],
+                                                              tournament['roundSize'],
+                                                              repetition):
+                                # Create a copy of the individual
+                                newIndividuals.append(deepcopy(individual))
+                                # Enhance
+                                for _ in range(tournament['offsprings']):
+                                    newIndividual = deepcopy(individual)
+                                    newIndividual.mutate()
+                                    newIndividuals.append(newIndividual)
+                            # Renew to population
+                            self.individuals[repetition] = newIndividuals
+                            # Reevaluate the new models
+                            self.evaluate(repetition)
+                            # Check if there is a new best individual
+                            if self.individuals[repetition][0].fitness < self.repBest[repetition].fitness:
+                                self.repBest[repetition] = deepcopy(self.individuals[repetition][0])
+                            if self.individuals[repetition][0].fitness < self.overallBest.fitness:
+                                self.overallBest = deepcopy(self.individuals[repetition][0])
+                            print ('Rep {0} - Gen {1} - Rep Best {2} - Overall Best {3}'.format(repetition+1,
+                                   g+1, self.repBest[repetition].fitness, self.overallBest.fitness))

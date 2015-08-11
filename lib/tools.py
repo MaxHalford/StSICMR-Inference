@@ -1,4 +1,5 @@
 import pandas as pd
+import signal
 
 def psmc_to_csv(filename, mutationRate=2.5e-8, binSize=100):
     ''' Convert the last iteration of the PSMC to a CSV file. '''
@@ -29,7 +30,16 @@ def search_increase(times, lambdas):
             i += 1
     return (times[i:], lambdas[i:])
 
+def alarm_handler(signum, frame):
+    raise IOError
 
+def input_with_timeout(prompt, timeout):
+    signal.signal(signal.SIGALRM, alarm_handler)
+    signal.alarm(timeout)
+    try:
+        return input(prompt)
+    finally:
+        signal.alarm(0)
 
 
 

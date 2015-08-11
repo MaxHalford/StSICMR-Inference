@@ -168,26 +168,10 @@ Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is 
 
     StSICMR-Inference
     ├───┐ examples
-    │   ├─── example1.csv
-    │   ├─── example1.psmc
-    │   ├─── example1_0_switch.json
-    │   ├─── example1_0_switch.png
-    │   ├─── example2.csv
-    │   ├─── example2.psmc
-    │   ├─── example2_3_switch.json
-    │   ├─── example2_3_switch.png
-    │   ├─── example3.csv
-    │   ├─── example3.psmc
-    │   ├─── example3_manual.json
-    │   └─── example3_manual.png
+    │   └─── ...
     ├───┐ lib
-    │   ├───┐ cython
-    │   │   ├─── compile.sh
-    │   │   ├─── cythonized.c
-    │   │   ├─── cythonized.pyx
-    │   │   └─── setup.py
     │   ├───┐ inference
-    │   │   ├─── __init.py__
+    │   │   ├─── __init__.py
     │   │   ├─── distance.py
     │   │   ├─── genalg.py
     │   │   └─── genalgOptions.json
@@ -195,14 +179,14 @@ Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is 
     │   ├─── chartOptions.json
     │   ├─── model.py
     │   ├─── plotting.py
-    │   ├─── tools.py
-    │   └─── tests.py
+    │   └─── tools.py
     ├─── convert.py
     ├─── infer.py
     ├─── LICENSE
     ├─── manual.py
     ├─── README.md
-    └─── requirements.txt
+    ├─── requirements.txt
+    └─── utests.py
 
 The two main scripts (``infer.py`` and ``manual.py``) are in the top-level of the directory. In the ``lib`` folder is where the heavy-lifting is being done:
 
