@@ -70,4 +70,4 @@ if parameters.keep is True:
     plotting.plotModel(m, times, lambdas, logScale=True,
                        save='{0}.png'.format(fileName))
 else:
-    plotting.plotModel(m, times, lambdas, logScale=True)
+    plotting.plotModel(m, times, logScale=True)

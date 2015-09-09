@@ -1,0 +1,10 @@
+# Number of independent experiments
+20
+# MS command
+ms 2 100 -t 600 -r 120 30000000 -I 10 2 0 0 0 0 0 0 0 0 0 1 -p 8
+# PSMC command
+psmc -N25 -t15 -r5 -p 4+25*2+4+6
+# Mutation rate per locus per generation (\mu value)
+1e-8
+# Path to the folder where MS and PSMC are
+/work/wrodriguez/Structure_vs_Bottleneck/le_changement_mime_tout/Automatic_Scenarios/utils/

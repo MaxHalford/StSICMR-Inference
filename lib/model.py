@@ -66,7 +66,6 @@ class StSICMR:
     def evaluate_Pt(self, t):
         ''' Get the time interval that contains t. '''
         i = bisect.bisect_right(self.T, t) - 1
-        #print ('{0} : {1} : {2}'.format(np.round(self.T, 2), t, i))
         return np.dot(self.cumprods[i],
                       self.exponential_Q(t-self.T[i], i))
 
@@ -128,7 +127,7 @@ class StSICMR:
                'T': list(map(float, self.T)),
                'M': list(map(float, self.M)),
                'C': list(map(float, self.C))}
-        # Save it a s a .json file
+        # Save it to a JSON file
         with open(path + '.json', 'w') as outfile:
             json.dump(DNA, outfile)
         # Tell the user the inference has been saved

@@ -23,7 +23,7 @@ init = options['initialGeneration']
 
 class Individual:
 
-    def __init__(self, Model, maxTime, sizeChange, switches):
+    def __init__(self, Model, maxTime, sizeChange, switches, timeGap):
         ''' Generate a model. '''
         # Keep the size to know if the island sizes will change or not
         self.sizeChange = sizeChange
@@ -36,6 +36,8 @@ class Individual:
                               for _ in range(switches)])
         # Flow rates
         self.M = [rand.uniform(0, 30) for _ in range(switches + 1)]
+        # Time gap
+        self.timeGap = timeGap
         # Population sizes
         if sizeChange is True:
             self.C = [rand.uniform(0, init['maxSize'])
@@ -98,6 +100,19 @@ class Individual:
             else:
                 self.mutate_n(mutations['n'])
 
+    def check_time(self, newTime):
+        ''' Check a new time is valid. '''
+        # The new time has to be bounded
+        if not 0 < newTime < self.maxTime:
+            return False
+        # The new time has to have a gap with the others
+        differences = [np.abs(t - newTime) for t in self.T]
+        differences.remove(0)
+        if np.sum(np.array(differences) < self.timeGap) > 0:
+            return False
+        # Valid time
+        return True
+
     def mutate_T(self, variance):
         ''' Mutate times. '''
         # The first time is always 0
@@ -112,7 +127,7 @@ class Individual:
                 t = self.T[i]
                 self.T[i] = rand.normalvariate(t, variance)
                 # Do it again as long as it is not valid
-                while not 0 < self.T[i] < self.maxTime:
+                while self.check_time(self.T[i]) is False:
                     self.T[i] = rand.normalvariate(t, variance)
                 # Sort them in ascending order
                 self.T.sort()
@@ -215,9 +230,11 @@ class Population:
         self.switches = switches
         # Fitness method
         self.method = method
+        # Time gap so the times are not too close together
+        self.timeGap = self.times[-1] * options['timeGapPercentage'] / 100
         # Create initial random individuals
         self.individuals = [[Individual(Model, self.times[-1],
-                             sizeChange, self.switches)
+                             sizeChange, self.switches, self.timeGap)
                             for _ in range(init['popSize'])]
                             for _ in range(repetitions)]
         # Evaluate them

@@ -115,6 +115,7 @@ The other script called ``manual.py`` is for visualizing a model with user-defin
 	There are offspring x rounds number of new individuals. The way the tournament works is that the best out of a random 		sample of individuals is chosen. This means that big tournaments are favorable to strong individuals and small 			tournaments allow weaker individuals to go through (which isn't necessarily a bad thing, 					[simulated annealing](http://www.wikiwand.com/en/Simulated_annealing) does the same thing).
 - It also has to be said that including the island size parameter (``-c``) requires the algorithm to run for much more generations because the search space becomes much bigger.
 - If you think you have a better way of measuring the distance between two curves you can add it to the ``distance.py`` script and modify the ``evaluate()`` procedure in the ``genalg.py`` script.
+- A recurring problem was that sometimes the times as which the migration rates changes were so close it was like having only one. The ``genalgOptions.json`` now has a ``timeGapPercentage`` parameter. This obliges times to be split by at least a percetenge of the last time. For example if the last time is 120 and the parameter is set to 18 then times will have to be spread out by at least 120 * 18 / 100 = 21.6.
 
 ## Examples
 
@@ -123,8 +124,8 @@ The following commands use PSMC files provided by [Willy Rodriguez](https://gith
 ### First example - 0 switches
 
 ```sh
-python convert.py examples/example1.psmc
-python infer.py examples/example1.csv -s 0 -g 25 -r 1 -m least_squares -k True
+python convert.py data/example1.psmc
+python infer.py data/example1.csv -s 0 -g 25 -r 1 -m least_squares -k True
 ```
 
 ![First example](http://i.imgur.com/dAjLVEo.png)
@@ -132,8 +133,8 @@ python infer.py examples/example1.csv -s 0 -g 25 -r 1 -m least_squares -k True
 ### Second example - 3 switches
 
 ```sh
-python convert.py examples/example2.psmc
-python infer.py examples/example2.csv -s 3 -g 100 -m integral -k True -o examples/example2_3_switch
+python convert.py data/example2.psmc
+python infer.py data/example2.csv -s 3 -g 100 -m integral -k True -o data/example2_3_switch
 ```
 
 ![Second example](http://i.imgur.com/kxyBi7l.png)
@@ -143,8 +144,8 @@ python infer.py examples/example2.csv -s 3 -g 100 -m integral -k True -o example
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
 ```sh
-python convert.py examples/example3.psmc
-python infer.py examples/example3.csv -s 3 -c True -g 100 -m least_squares -k True -o examples/example3_island_size_change
+python convert.py data/example3.psmc
+python infer.py data/example3.csv -s 3 -c True -g 100 -m least_squares -k True -o data/example3_island_size_change
 ```
 
 ![Third example](http://i.imgur.com/6H4m7IL.png)
@@ -154,8 +155,8 @@ python infer.py examples/example3.csv -s 3 -c True -g 100 -m least_squares -k Tr
 You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always ``0``.
 
 ```sh
-python convert.py examples/example4.psmc
-python manual.py examples/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True
+python convert.py data/example4.psmc
+python manual.py data/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True
 ```
 
 ![Fourth example](http://i.imgur.com/O7kLV5J.png)
@@ -167,7 +168,7 @@ Changing the chart outputs is really easy. The ``lib/chartOptions.json``file is 
 ## Architecture
 
     StSICMR-Inference
-    ├───┐ examples
+    ├───┐ data
     │   └─── ...
     ├───┐ lib
     │   ├───┐ inference
@@ -197,15 +198,13 @@ The two main scripts (``infer.py`` and ``manual.py``) are in the top-level of th
 
 The reason why ``lib`` contains the ``ìnference`` folder is if ever there will be another method of infering the parameters, it doesn't necessarily have to be a genetic algorithm. However the distance measures between the target curve and the model curve will always be the same, hence the ``distance.py`` script that can easily be reused with other methods.
 
-One of the flaws of genetic algorithms is their computational cost. The ``cython`` folder aims at speeding up some of the mathematics done in the ``model.py`` script (for example eigenvalues and diagonalization). For the moment I haven't done much work here (I want to learn how to do good C code) but I will be in the future. If ever you want to add some C code you can use [cprofilev](https://github.com/ymichael/cprofilev) to check what functions are taking the most time. Once you have added code to ``cythonized.pyx`` you can compile it to C code with ``compile.sh`` script, it's as easy as that.
-
-I haven't included the files from the virtual environment as there are too many.
-
 ## Contact
 
 If you have questions about the mathematics please send a mail to <willyrv@gmail.com>.
 
 If you have questions about the genetic algorithm and/or the code please send a mail to <maxhalford25@gmail.com>.
+
+I wrote an [internship report](http://maxhalford.com/resources/internships/L3_Internship_Max_Halford.pdf) related to this software in 2015 for my third year at university.
 
 ## License
 
