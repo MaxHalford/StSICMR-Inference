@@ -196,7 +196,7 @@ The two main scripts (``infer.py`` and ``manual.py``) are in the top-level of th
 - ``genalg.py`` tries to find good parameters for the model to fit a PSMC timeline.
 - ``plotting.py`` plots a model and a PSMC timeline on the same chart.
 
-The reason why ``lib`` contains the ``ìnference`` folder is if ever there will be another method of infering the parameters, it doesn't necessarily have to be a genetic algorithm. However the distance measures between the target curve and the model curve will always be the same, hence the ``distance.py`` script that can easily be reused with other methods.
+The reason why ``lib`` contains the ``inference`` folder is if ever there will be another method of infering the parameters, it doesn't necessarily have to be a genetic algorithm. However the distance measures between the target curve and the model curve will always be the same, hence the ``distance.py`` script that can easily be reused with other methods.
 
 ## Contact
 
