@@ -213,10 +213,3 @@ See the [LICENSE file](LICENSE).
 ## Issues
 
 Please click on the "Issues" button or use the email adresses, we'll be glad to help.
-
-## Updates
-
-| Version | Date      | Update                                                                                     |
-|---------|-----------|--------------------------------------------------------------------------------------------|
-| 1.0     | June 2015 | Initialization.                                                                            |
-| 1.1     | July 2015 | Added the possibility to allow the islands to change size when the migration rates change. |
