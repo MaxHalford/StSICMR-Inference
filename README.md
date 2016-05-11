@@ -204,7 +204,7 @@ If you have questions about the mathematics please send a mail to <willyrv@gmail
 
 If you have questions about the genetic algorithm and/or the code please send a mail to <maxhalford25@gmail.com>.
 
-I wrote an [internship report](http://maxhalford.com/resources/internships/L3_Internship_Max_Halford.pdf) related to this software in 2015 for my third year at university.
+I wrote an [internship report](http://maxhalford.com/data/internships/L3_Internship_Max_Halford.pdf) related to this software in 2015 for my third year at university.
 
 ## License
 
