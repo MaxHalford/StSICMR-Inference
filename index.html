@@ -29,7 +29,7 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h2>
-<a id="symmetrical-island-model-with-changes-in-migration-rates---inference" class="anchor" href="#symmetrical-island-model-with-changes-in-migration-rates---inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symmetrical Island Model with Changes in Migration Rates - Inference</h2>
+<a id="symmetrical-island-model-with-changes-in-migration-rates---inference" class="anchor" href="#symmetrical-island-model-with-changes-in-migration-rates---inference" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Symmetrical Island Model with Changes in Migration Rates - Inference</h2>
 
 <p>The Symmetrical Island Model with Changes in Migration Rates (StSICMR) is a model developped by <a href="http://fr.viadeo.com/fr/profile/olivier.mazet1">Oliver Mazet</a> and <a href="https://www.wikiwand.com/en/Loun%C3%A8s_Chikhi">Lounès Chikhi</a> with their research team.</p>
 
@@ -38,7 +38,7 @@
 <p>The method tries to fit the model to a PSMC timeline produced with <a href="https://github.com/lh3/psmc">Heng Li's algorithm</a>. It starts by extracting the times and the lambda values of the last iteration from a <code>.psmc</code> file. Then it normalizes the lambda value so that they start at 1 (because the model is normalized to begin at 1 also). For the fitting part it uses a <a href="http://www.wikiwand.com/en/Genetic_algorithm">genetic algorithm</a> using <a href="https://www.wikiwand.com/en/Tournament_selection">tournament selection</a>. The implementation is done in Python 3.4 and is designed to be comprehensible and easy to edit. I wrote a <a href="http://maxhalford.com/resources/notebooks/genetic-algorithms.html">tutorial on genetic algorithms</a> to explain how I code genetic algorithms with Python.</p>
 
 <h2>
-<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of Contents</h2>
+<a id="table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Table of Contents</h2>
 
 <ul>
 <li><a href="#setup">Setup</a></li>
@@ -53,12 +53,12 @@
 </ul>
 
 <h2>
-<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h2>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup</h2>
 
 <p>All of the code has been tested with both Python 2 and Python 3. People have successfully used it on Ubuntu, Mac OS and Windows. You can either use your current Python installation, a virtual environment or the <a href="https://store.continuum.io/cshop/anaconda/">Anaconda distribution</a>.</p>
 
 <h3>
-<a id="1-normal" class="anchor" href="#1-normal" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Normal</h3>
+<a id="1-normal" class="anchor" href="#1-normal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>1. Normal</h3>
 
 <p>The following module versions were used, that said older and newer versions have a good chance of working too.</p>
 
@@ -70,17 +70,17 @@
 
 <p>If you do not have them installed type</p>
 
-<div class="highlight highlight-sh"><pre><span class="pl-c1">cd</span> StSICMR-Inference
+<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> StSICMR-Inference
 pip3 install -r requirements.txt</pre></div>
 
 <p>If you don't have <code>pip</code> installed then you can install the modules manually, this should be easy on any platform as all of them are extremely popular modules.</p>
 
 <h3>
-<a id="2-with-a-virtual-environment" class="anchor" href="#2-with-a-virtual-environment" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. With a virtual environment</h3>
+<a id="2-with-a-virtual-environment" class="anchor" href="#2-with-a-virtual-environment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>2. With a virtual environment</h3>
 
 <p>If you want to be safe and not mess with your Python environment you use a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a> included in the repository.</p>
 
-<div class="highlight highlight-sh"><pre>pip3 install virtualenv
+<div class="highlight highlight-source-shell"><pre>pip3 install virtualenv
 virtualenv venv
 <span class="pl-c1">source</span> venv/bin/activate
 pip install -r requirements.txt</pre></div>
@@ -88,20 +88,20 @@ pip install -r requirements.txt</pre></div>
 <p>This uses a sandboxed Python where you can do as you please without fear of screwing up your setup. To deactivate the virtual environment type <code>deactivate</code>. To activate it type <code>source venv/bin/activate</code>, or else the default Python interpreter will be used. You can delete the <code>StSICMR-Inference</code> folder and it will be as if nothing ever happened.</p>
 
 <h3>
-<a id="3-anaconda" class="anchor" href="#3-anaconda" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Anaconda</h3>
+<a id="3-anaconda" class="anchor" href="#3-anaconda" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>3. Anaconda</h3>
 
 <p>This is probably the easiest way if you don't have Python installed. Simply <a href="http://continuum.io/downloads">download Anaconda</a> for your platform (you can choose between Python 2 or 3). Anaconda includes all the modules necessary so there is nothing else to do.</p>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
-<a id="convert" class="anchor" href="#convert" aria-hidden="true"><span class="octicon octicon-link"></span></a>Convert</h3>
+<a id="convert" class="anchor" href="#convert" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Convert</h3>
 
 <p>The algorithm requires a CSV file. Most of the time these are to be extracted from PSMC files. The <code>convert.py</code>script can do this, as can be seen in the <a href="#examples">Examples</a> section. You can use any CSV file, the first column will be considered as the time vector and the second one as the PSMC vector.</p>
 
 <h3>
-<a id="infer" class="anchor" href="#infer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infer</h3>
+<a id="infer" class="anchor" href="#infer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Infer</h3>
 
 <p>The main script is called <code>infer.py</code> and guesses the parameters for a given PSMC timeline.</p>
 
@@ -184,7 +184,7 @@ pip install -r requirements.txt</pre></div>
 <p>At every repetition the console will prompt you if you desire to continue (<code>y</code>) or to go to the next repetition (<code>n</code>). If you do then it will ask you for how many generations you wish to continue.</p>
 
 <h3>
-<a id="manual" class="anchor" href="#manual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manual</h3>
+<a id="manual" class="anchor" href="#manual" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Manual</h3>
 
 <p>The other script called <code>manual.py</code> is for visualizing a model with user-defined parameters.</p>
 
@@ -228,7 +228,7 @@ pip install -r requirements.txt</pre></div>
 </table>
 
 <h3>
-<a id="taming-the-genetic-algorithm" class="anchor" href="#taming-the-genetic-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Taming the genetic algorithm</h3>
+<a id="taming-the-genetic-algorithm" class="anchor" href="#taming-the-genetic-algorithm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Taming the genetic algorithm</h3>
 
 <ul>
 <li>Increasing the generation size can have an impact, the longer the algorithm runs the lower the chance that the algorithm won't improve the model.</li>
@@ -254,53 +254,53 @@ There are offspring x rounds number of new individuals. The way the tournament w
 </ul>
 
 <h2>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
 
 <p>The following commands use PSMC files provided by <a href="https://github.com/willyrv">Willy Rodriguez</a>.</p>
 
 <h3>
-<a id="first-example---0-switches" class="anchor" href="#first-example---0-switches" aria-hidden="true"><span class="octicon octicon-link"></span></a>First example - 0 switches</h3>
+<a id="first-example---0-switches" class="anchor" href="#first-example---0-switches" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>First example - 0 switches</h3>
 
-<div class="highlight highlight-sh"><pre>python convert.py data/example1.psmc
+<div class="highlight highlight-source-shell"><pre>python convert.py data/example1.psmc
 python infer.py data/example1.csv -s 0 -g 25 -r 1 -m least_squares -k True</pre></div>
 
 <p><img src="http://i.imgur.com/dAjLVEo.png" alt="First example"></p>
 
 <h3>
-<a id="second-example---3-switches" class="anchor" href="#second-example---3-switches" aria-hidden="true"><span class="octicon octicon-link"></span></a>Second example - 3 switches</h3>
+<a id="second-example---3-switches" class="anchor" href="#second-example---3-switches" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Second example - 3 switches</h3>
 
-<div class="highlight highlight-sh"><pre>python convert.py data/example2.psmc
+<div class="highlight highlight-source-shell"><pre>python convert.py data/example2.psmc
 python infer.py data/example2.csv -s 3 -g 100 -m integral -k True -o data/example2_3_switch</pre></div>
 
 <p><img src="http://i.imgur.com/kxyBi7l.png" alt="Second example"></p>
 
 <h3>
-<a id="third-example---islands-can-change-size" class="anchor" href="#third-example---islands-can-change-size" aria-hidden="true"><span class="octicon octicon-link"></span></a>Third example - Islands can change size</h3>
+<a id="third-example---islands-can-change-size" class="anchor" href="#third-example---islands-can-change-size" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Third example - Islands can change size</h3>
 
 <p>You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always <code>0</code>.</p>
 
-<div class="highlight highlight-sh"><pre>python convert.py data/example3.psmc
+<div class="highlight highlight-source-shell"><pre>python convert.py data/example3.psmc
 python infer.py data/example3.csv -s 3 -c True -g 100 -m least_squares -k True -o data/example3_island_size_change</pre></div>
 
 <p><img src="http://i.imgur.com/6H4m7IL.png" alt="Third example"></p>
 
 <h3>
-<a id="fourth-example---manual" class="anchor" href="#fourth-example---manual" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fourth example - Manual</h3>
+<a id="fourth-example---manual" class="anchor" href="#fourth-example---manual" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Fourth example - Manual</h3>
 
 <p>You can also try to fit the model to the PSMC curve yourself. Make sure to give the same number of times (T) and migration rates (M). Don't forget that the first time is always <code>0</code>.</p>
 
-<div class="highlight highlight-sh"><pre>python convert.py data/example4.psmc
+<div class="highlight highlight-source-shell"><pre>python convert.py data/example4.psmc
 python manual.py data/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k True</pre></div>
 
 <p><img src="http://i.imgur.com/O7kLV5J.png" alt="Fourth example"></p>
 
 <h2>
-<a id="output" class="anchor" href="#output" aria-hidden="true"><span class="octicon octicon-link"></span></a>Output</h2>
+<a id="output" class="anchor" href="#output" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Output</h2>
 
 <p>Changing the chart outputs is really easy. The <code>lib/chartOptions.json</code>file is made for easily doing so. The default settings produce the charts you see in the <a href="#examples">Examples</a> section. Most of the parameters are not too hard to understand. I would recommend reading the documentation from <a href="http://matplotlib.org/contents.html">matplotlib</a> if you want to do something complicated.</p>
 
 <h2>
-<a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>Architecture</h2>
+<a id="architecture" class="anchor" href="#architecture" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Architecture</h2>
 
 <pre><code>StSICMR-Inference
 ├───┐ data
@@ -341,26 +341,26 @@ python manual.py data/example4.csv -n 12 -T 0 3 8 20 -M 3 4 3 7 -C 1 1 1 1 -k Tr
 <p>The reason why <code>lib</code> contains the <code>ìnference</code> folder is if ever there will be another method of infering the parameters, it doesn't necessarily have to be a genetic algorithm. However the distance measures between the target curve and the model curve will always be the same, hence the <code>distance.py</code> script that can easily be reused with other methods.</p>
 
 <h2>
-<a id="contact" class="anchor" href="#contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact</h2>
+<a id="contact" class="anchor" href="#contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contact</h2>
 
 <p>If you have questions about the mathematics please send a mail to <a href="mailto:willyrv@gmail.com">willyrv@gmail.com</a>.</p>
 
 <p>If you have questions about the genetic algorithm and/or the code please send a mail to <a href="mailto:maxhalford25@gmail.com">maxhalford25@gmail.com</a>.</p>
 
-<p>I wrote an <a href="http://maxhalford.com/resources/internships/L3_Internship_Max_Halford.pdf">internship report</a> related to this software in 2015 for my third year at university.</p>
+<p>I wrote an <a href="http://maxhalford.com/data/internships/L3_Internship_Max_Halford.pdf">internship report</a> related to this software in 2015 for my third year at university.</p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>See the <a href="LICENSE">LICENSE file</a>.</p>
 
 <h2>
-<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Issues</h2>
+<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issues</h2>
 
 <p>Please click on the "Issues" button or use the email adresses, we'll be glad to help.</p>
 
 <h2>
-<a id="updates" class="anchor" href="#updates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Updates</h2>
+<a id="updates" class="anchor" href="#updates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Updates</h2>
 
 <table>
 <thead>
